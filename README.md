@@ -1,2 +1,2 @@
-policycompass-jfcm
+Policy Compass FCM Manager Service
 ==================
