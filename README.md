@@ -49,3 +49,14 @@ The final step is to activate Tomcat by running its startup script:
   $CATALINA_HOME/bin/startup.sh
 ```
 You can visually verify that Tomcat is working by accessing your server page at http://localhost:8080.
+### Install PostgreSQL
+```shell
+  apt-get install postgresql
+```
+
+Create a postgres user and a database
+
+```shell
+  sudo -u postgres createuser pcompass -W
+  sudo -u postgres createdb pcompass --owner pcompass
+```
