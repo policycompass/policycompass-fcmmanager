@@ -14,7 +14,7 @@ public class DBConnection
 			String connectionURL = "jdbc:postgresql://localhost:5432/pcompass";
 			Connection connection = null;
 			Class.forName("org.postgresql.Driver");
-			connection = DriverManager.getConnection(connectionURL, "pcompass", "ALLAHisG8");
+			connection = DriverManager.getConnection(connectionURL, "pcompass", "pcompass");
 			return connection;
 		}
 		catch (SQLException e)
