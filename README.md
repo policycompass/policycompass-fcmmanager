@@ -60,3 +60,4 @@ Create a postgres user and a database
   sudo -u postgres createuser pcompass -W
   sudo -u postgres createdb pcompass --owner pcompass
 ```
+## Installation
