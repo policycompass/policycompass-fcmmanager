@@ -19,7 +19,7 @@ After the download completes, untar the file.
 ```
 Finish up the Tomcat installation by moving the files to a convenient directory.
 ```shell
-  sudo mv pache-tomcat-7.0.35  /usr/share/
+  sudo mv apache-tomcat-7.0.55  /usr/share/
 ```
 ### Configure .bashrc
 Before editing the .bashrc file in your home directory, we need to find the path where Java has been installed to set the JAVA_HOME environment variable. Let's use the following command to do that:
@@ -38,7 +38,7 @@ In order to start Tomcat, we need to add it as an environment variable in the /.
 You can add this information to the end of the file:
 ```shell
   export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
-  export CATALINA_HOME=/usr/share/tomcat-7.0.35
+  export CATALINA_HOME=/usr/share/apache-tomcat-7.0.55
 ```
 After saving and closing the .bashrc file, execute the following command so that your system recognizes the newly created environment variables:
 ```shell
