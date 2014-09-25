@@ -49,6 +49,10 @@ The final step is to activate Tomcat by running its startup script:
   $CATALINA_HOME/bin/startup.sh
 ```
 You can visually verify that Tomcat is working by accessing your server page at http://localhost:8080.
+### Install Maven
+```shell
+  apt-get install maven
+```
 ### Install PostgreSQL
 ```shell
   apt-get install postgresql
@@ -60,4 +64,22 @@ Create a postgres user and a database
   sudo -u postgres createuser pcompass -W
   sudo -u postgres createdb pcompass --owner pcompass
 ```
-## Installation
+
+## FCM Manager Web Service Installation
+
+* Clone the repository
+```shell
+  git clone git@github.com:policycompass/policycompass-fcmmanager.git
+  cd policycompass-fcmmanager
+```
+* Create WAR file 
+```shell
+  mvn clean install
+```
+* Deploy to local Tomcat
+```shell
+  mv $CATALINA_HOME/web
+```
+
+### Test the Web Service
+http://localhost:8080
