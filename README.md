@@ -72,6 +72,10 @@ Create a postgres user and a database
   git clone git@github.com:policycompass/policycompass-fcmmanager.git
   cd policycompass-fcmmanager
 ```
+* Edit the Database settings according to your needs
+```shell
+  gedit src/hibernate.cfg.xml
+```
 * Create WAR file 
 ```shell
   mvn clean install
