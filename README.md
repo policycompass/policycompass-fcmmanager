@@ -78,7 +78,7 @@ Create a postgres user and a database
 ```
 * Deploy to local Tomcat
 ```shell
-  mv $CATALINA_HOME/web
+  mv target/ $CATALINA_HOME/webapps
 ```
 
 ### Test the Web Service
