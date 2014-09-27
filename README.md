@@ -51,11 +51,11 @@ The final step is to activate Tomcat by running its startup script:
 You can visually verify that Tomcat is working by accessing your server page at http://localhost:8080.
 ### Install Maven
 ```shell
-  apt-get install maven
+  sudo apt-get install maven
 ```
 ### Install PostgreSQL
 ```shell
-  apt-get install postgresql
+  sudo apt-get install postgresql
 ```
 
 Create a postgres user and a database
