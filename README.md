@@ -74,16 +74,12 @@ Create a postgres user and a database
 ```
 * Edit the Database settings according to your needs
 ```shell
-  gedit src/hibernate.cfg.xml
+  gedit src/main/resources/hibernate.cfg.xml
 ```
 * Create WAR file 
 ```shell
   mvn clean install
 ```
-* Deploy to local Tomcat
-```shell
-  mv target/ $CATALINA_HOME/webapps
-```
-
 ### Test the Web Service
-http://localhost:8080
+http://localhost:8080/api/v1/fcmmanager/models
+http://localhost:8080/api/v1/fcmmanager/models/:id
