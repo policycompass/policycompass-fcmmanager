@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="policycompass.fcmmanager.models.FCMConcept" table="fcmmanager_concepts">
+        <id name="ConceptID" type="int">
+            <column name="ConceptID" precision="0" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="FCMModelID" type="int">
+            <column name="FCMModelID" precision="0" scale="0" />
+        </property>
+        <property name="Title" type="string">
+            <column name="Title" length="50" not-null="true" />
+        </property>
+        <property name="Description" type="string">
+            <column name="Description" length="255" not-null="false" />
+        </property>
+        <property name="Activator" type="string">
+            <column name="Activator" length="50" not-null="false" />
+        </property>
+        <property name="Input" type="double">
+            <column name="Input"  precision="2" scale="0" not-null="true" />
+        </property>
+        <property name="Output" type="double">
+            <column name="Output"  precision="2" scale="0" not-null="true" />
+        </property>
+        <property name="FixedOutput" type="double">
+            <column name="FixedOutput"  precision="2" scale="0" not-null="true" />
+        </property>
+        <property name="UserID" type="int">
+            <column name="UserID"  precision="0" scale="0" not-null="true" />
+        </property>
+        <property name="DateAddedtoPC" type="date">
+            <column name="DateAddedtoPC" length="15" not-null="true" />
+        </property>
+        <property name="DateModified" type="date">
+            <column name="DateModified" length="15" not-null="false" />
+        </property>
+        <property name="ViewsCount" type="int">
+            <column name="ViewsCount"  precision="0" scale="0" not-null="true" />
+        </property>
+    </class>
+
+</hibernate-mapping>

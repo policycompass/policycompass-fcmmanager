@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<name>Policycompass FCMManager Web Service</name>
+	<groupId>policycompass.fcmmanager</groupId>
+	<artifactId>policycompass.fcmmanager</artifactId>
+	<packaging>war</packaging>
+	<version>1.0-SNAPSHOT</version>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<hibernate.version>4.3.5.Final</hibernate.version>  
+		<jersey.version>1.18</jersey.version>
+	    <log4j.version>1.2.17</log4j.version>  
+	    <jdk.version>1.7</jdk.version>  
+		<guice.version>3.0</guice.version>
+		<guava.version>r09</guava.version>
+		<tomcat.target.dev>${CATALINA_HOME}/webapps</tomcat.target.dev>
+	</properties>
+
+	<build>
+		<finalName>api</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+				<source>1.7</source>
+				<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.1.11.v20130520</version>
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<connectors>
+						<connector implementation="org.eclipse.jetty.nio.SelectChannelConnector">
+							<port>8080</port>
+							<maxIdleTime>60000</maxIdleTime>
+						</connector>
+					</connectors>
+					<stopKey/>
+					<stopPort/>
+				</configuration>
+			</plugin>
+			<!-- WAR PLUGIN:
+			TODO: Not sure if patching the 'outputDirectory' is the Maven Way... but it works.
+			TODO: Maybe there is another Maven Lifecycle phase better fit for the job?
+			TODO: Goal: Deploy AND start Tomcat with a single command.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+                    <webXml>WebContent/WEB-INF/web.xml</webXml>
+					<outputDirectory>${tomcat.target.dev}</outputDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+  <dependencies>
+	<dependency>
+		<groupId>antlr</groupId>
+		<artifactId>antlr</artifactId>
+		<version>2.7.7</version>
+	</dependency>
+	
+    <!-- Postgresql -->
+	<dependency>
+	    <groupId>postgresql</groupId>
+	    <artifactId>postgresql</artifactId>
+	    <version>9.1-901.jdbc4</version>
+	</dependency>
+
+	<dependency>
+		<groupId>asm</groupId>
+		<artifactId>asm-all</artifactId>
+		<version>3.1</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>dom4j</groupId>
+		<artifactId>dom4j</artifactId>
+		<version>1.6.1</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-core</artifactId>
+	    <version>4.3.6.Final</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.hibernate.common</groupId>
+	    <artifactId>hibernate-commons-annotations</artifactId>
+	    <version>4.0.5.Final</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.hibernate.javax.persistence</groupId>
+	    <artifactId>hibernate-jpa-2.1-api</artifactId>
+	    <version>1.0.0.Final</version>
+	</dependency>
+
+    <!-- Jackson -->
+	<dependency>
+	    <groupId>org.codehaus.jackson</groupId>
+	    <artifactId>jackson-core-asl</artifactId>
+	    <version>1.9.2</version>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.codehaus.jackson</groupId>
+	    <artifactId>jackson-jaxrs</artifactId>
+	    <version>1.9.2</version>
+	</dependency>
+
+    <!-- Jersey -->
+    <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-core</artifactId>
+        <version>1.18</version>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-json</artifactId>
+        <version>1.18</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.sun.jersey</groupId>
+	    <artifactId>jersey-server</artifactId>
+	    <version>1.18</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.sun.jersey</groupId>
+	    <artifactId>jersey-servlet</artifactId>
+	    <version>1.18</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.sun.jersey</groupId>
+	    <artifactId>jersey-client</artifactId>
+	    <version>1.18</version>
+	</dependency>
+
+    <!-- Hibernate -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${hibernate.version}</version>
+    </dependency>
+
+  </dependencies>
+  
+</project>
