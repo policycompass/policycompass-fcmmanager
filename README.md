@@ -82,4 +82,5 @@ Create a postgres user and a database
 ```
 ### Test the Web Service
 http://localhost:8080/api/v1/fcmmanager/models
+
 http://localhost:8080/api/v1/fcmmanager/models/:id
