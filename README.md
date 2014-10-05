@@ -74,6 +74,7 @@ Create a postgres user and a database
 ```
 * Edit the Database settings according to your needs
 ```shell
+  cp src/main/resources/hibernate.cfg.template.xml src/main/resources/hibernate.cfg.xml
   gedit src/main/resources/hibernate.cfg.xml
 ```
 * Create WAR file 
