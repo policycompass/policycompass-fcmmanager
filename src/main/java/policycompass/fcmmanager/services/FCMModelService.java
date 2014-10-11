@@ -1,6 +1,7 @@
 package policycompass.fcmmanager.services;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -12,7 +13,7 @@ import policycompass.fcmmanager.models.*;
 @Path("/fcmmanager")
 public class FCMModelService {
 
-	@GET
+/*	@GET
 	@Path("/models")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response retrieveAllModels() throws Exception {
@@ -20,7 +21,16 @@ public class FCMModelService {
 		rb = Response.ok(FCMModels.retrieveFCMModelList()).build();
 		return rb;
 	}
+*/
+	
+	@GET
+	@Path("/models")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<FCMModel> retrieveAllModels() throws Exception {
+		return FCMModels.retrieveFCMModelList();
+	}
 
+	
 	@GET
 	@Path("/models/{id}")
 	@Produces(MediaType.APPLICATION_JSON)

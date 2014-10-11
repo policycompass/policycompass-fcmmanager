@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "FCM Connections")
-@XmlType(propOrder = { "ConnectionID", "Title", "ConceptFrom", "ConceptTo", "Weighted", "UserID", "DateAddedtoPC", "DateModified", "ViewsCount" })
+@XmlType(propOrder = { "ConnectionID", "FCMModelID", "Title", "ConceptFrom", "ConceptTo", "Weighted", "UserID", "DateAddedtoPC", "DateModified", "ViewsCount" })
 
 @Entity (name="fcmmanager_connections")
 public class FCMConnection {
@@ -17,6 +17,8 @@ public class FCMConnection {
 	@Id
 	@Column(name = "ConnectionID", unique = true, nullable = false)
 	private int ConnectionID;
+	@Column(name = "FCMModelID", nullable = false)
+	private int FCMModelID;
 	@Column(name = "Title", nullable = false)
 	private String Title;
 	@Column(name = "ConceptFrom", nullable = false)
@@ -40,6 +42,10 @@ public class FCMConnection {
 	public void setConnectionID(int connectionID) {
 		ConnectionID = connectionID;
 	}
+
+	public int getFCMModelID() { return FCMModelID; }
+	public void setFCMModelID(int id) { this.FCMModelID = id; }
+
 	public String getTitle() {
 		return Title;
 	}
