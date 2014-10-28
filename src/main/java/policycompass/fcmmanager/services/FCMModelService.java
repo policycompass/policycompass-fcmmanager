@@ -3,8 +3,9 @@ package policycompass.fcmmanager.services;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
+import org.codehaus.jettison.json.JSONObject;
+
 import policycompass.fcmmanager.controllers.*;
-import policycompass.fcmmanager.models.*;
 
 @Path("/fcmmanager")
 public class FCMModelService {
@@ -17,7 +18,7 @@ public class FCMModelService {
 		rb = Response.ok(FCMModels.retrieveFCMModelList()).build();
 		return rb;
 	}
-	
+
 	@GET
 	@Path("/models/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -31,34 +32,26 @@ public class FCMModelService {
     @Path("/models")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response createFCMModel(FCMModel fcmmodels) {
-//        for(FCMModel fcmmodel : fcmmodels){
-  //      	FCMModels.createFCMModel(fcmmodel);            
-    //    }
- 
-        return Response.status(204).build();     
+    public Response createFCMModel(JSONObject fcmmodel) {
+    	FCMModels.createFCMModel(fcmmodel);            
+        return Response.ok(fcmmodel).build();     
     }
 
     @PUT 
     @Path("/models/{id}")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response updateFCMModel(FCMModel fcmmodels) {
-//        for(FCMModel fcmmodel : fcmmodels){
-  //      	FCMModels.createFCMModel(fcmmodel);            
-    //    }
- 
-        return Response.status(204).build();     
+    public Response UpdateFCMModel(@PathParam("id") int id, JSONObject fcmmodel) {
+    	//FCMModels.createFCMModel(fcmmodel);            
+        return Response.ok(fcmmodel).build();     
     }
+
 
     @DELETE 
     @Path("/models/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response deleteFCMModel(@PathParam("id") int id) {
-//        for(FCMModel fcmmodel : fcmmodels){
-  //      	FCMModels.createFCMModel(fcmmodel);            
-    //    }
- 
+    	FCMModels.deleteFCMModel(id);            
         return Response.status(204).build();     
     }
 
