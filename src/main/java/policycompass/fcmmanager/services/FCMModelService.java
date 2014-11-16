@@ -28,13 +28,21 @@ public class FCMModelService {
 		return rb;
 	}
 
+	@GET
+	@Path("/modelsid")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response retrieveFCMModelID() throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMModels.getFCMModelID()).build();
+		return rb;
+	}
+
     @POST 
     @Path("/models")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response createFCMModel(JSONObject fcmmodel) {
-    	FCMModels.createFCMModel(fcmmodel);            
-        return Response.ok(fcmmodel).build();     
+        return Response.ok(FCMModels.createFCMModel(fcmmodel)).build();     
     }
 
     @PUT 

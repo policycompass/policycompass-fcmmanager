@@ -49,7 +49,7 @@ public class FCMModels {
 		return model;
 	}	
 
-	public static void createFCMModel(JSONObject jsonModel) {
+	public static FCMModelDetail createFCMModel(JSONObject jsonModel) {
 
 		FCMModel model = new FCMModel();
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
@@ -134,6 +134,8 @@ public class FCMModels {
 		}
         session.getTransaction().commit();
         sessionFactory.close();			
+	
+        return(retrieveFCMModel(modelID));
 	}	
 
 	public static void deleteFCMModel(int id) {
@@ -376,7 +378,7 @@ public class FCMModels {
 
 		connection[5].setConceptFrom(conceptID-1+5);
 		connection[5].setConceptTo(conceptID-1+10);
-		connection[5].setWeighted(0.0);
+		connection[5].setWeighted(0.5);
 
 		connection[6].setConceptFrom(conceptID-1+6);
 		connection[6].setConceptTo(conceptID-1+10);
@@ -384,7 +386,7 @@ public class FCMModels {
 
 		connection[7].setConceptFrom(conceptID-1+7);
 		connection[7].setConceptTo(conceptID-1+14);
-		connection[7].setWeighted(0.0);
+		connection[7].setWeighted(0.5);
 
 		connection[8].setConceptFrom(conceptID-1+7);
 		connection[8].setConceptTo(conceptID-1+15);
@@ -392,7 +394,7 @@ public class FCMModels {
 
 		connection[9].setConceptFrom(conceptID-1+8);
 		connection[9].setConceptTo(conceptID-1+9);
-		connection[9].setWeighted(0.0);
+		connection[9].setWeighted(0.5);
 
 		connection[10].setConceptFrom(conceptID-1+8);
 		connection[10].setConceptTo(conceptID-1+16);
@@ -404,35 +406,35 @@ public class FCMModels {
 
 		connection[12].setConceptFrom(conceptID-1+10);
 		connection[12].setConceptTo(conceptID-1+9);
-		connection[12].setWeighted(0.0);
+		connection[12].setWeighted(0.5);
 
 		connection[13].setConceptFrom(conceptID-1+10);
 		connection[13].setConceptTo(conceptID-1+16);
-		connection[13].setWeighted(0.0);
+		connection[13].setWeighted(0.5);
 
 		connection[14].setConceptFrom(conceptID-1+11);
 		connection[14].setConceptTo(conceptID-1+16);
-		connection[14].setWeighted(0.0);
+		connection[14].setWeighted(0.5);
 
 		connection[15].setConceptFrom(conceptID-1+11);
 		connection[15].setConceptTo(conceptID-1+17);
-		connection[15].setWeighted(0.0);
+		connection[15].setWeighted(0.5);
 
 		connection[16].setConceptFrom(conceptID-1+12);
 		connection[16].setConceptTo(conceptID-1+11);
-		connection[16].setWeighted(0.0);
+		connection[16].setWeighted(0.5);
 
 		connection[17].setConceptFrom(conceptID-1+12);
 		connection[17].setConceptTo(conceptID-1+17);
-		connection[17].setWeighted(0.0);
+		connection[17].setWeighted(0.5);
 
 		connection[18].setConceptFrom(conceptID-1+13);
 		connection[18].setConceptTo(conceptID-1+17);
-		connection[18].setWeighted(0.0);
+		connection[18].setWeighted(0.5);
 
 		connection[19].setConceptFrom(conceptID-1+11);
 		connection[19].setConceptTo(conceptID-1+9);
-		connection[19].setWeighted(0.0);
+		connection[19].setWeighted(0.5);
 
 		connection[20].setConceptFrom(conceptID-1+15);
 		connection[20].setConceptTo(conceptID-1+14);
