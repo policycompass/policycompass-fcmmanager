@@ -1,9 +1,7 @@
 package policycompass.fcmmanager.controllers;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -86,8 +84,8 @@ public class FCMModels {
 				con.setInput(0.0);
 				con.setOutput(0.0);
 //				con.setFixedOutput(Double.parseDouble(ob.getString("fixedoutput")));
-				con.setFixedOutput(0.0);
-				con.setActivator(ob.getString("activetor"));
+				con.setFixedOutput(false);
+				con.setActivatorID(Integer.parseInt(ob.getString("activetor")));
 				con.setDateAddedtoPC(date1);
 				con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 				con.setViewsCount(0);
@@ -266,11 +264,33 @@ public class FCMModels {
 	}
 	
 	public static FCMModel LoadData() {
-		
+		FCMConceptActivator[] activator = new FCMConceptActivator[8];
 		FCMModel[] model = new FCMModel[2];
 		FCMConcept[] concept = new FCMConcept[29];
 		FCMConnection[] connection = new FCMConnection[40];
-
+		Date date1=new Date();
+        
+		for (int i=0;i<8;i++)
+		{
+			activator[i] = new FCMConceptActivator();
+		}
+		activator[0].setTitle("Cauchy Activator");
+		activator[1].setTitle("Gaussian Activator");
+		activator[2].setTitle("Hyperbolic Tangent Activator");
+		activator[3].setTitle("Interval Activator");
+		activator[4].setTitle("Linear Activator");
+		activator[5].setTitle("Nary Activator");
+		activator[6].setTitle("Sigmoid Activator");
+		activator[7].setTitle("Signum Activator");
+		for (int i=0;i<8;i++)
+		{
+			activator[i].setActivatorID(i+1);
+			activator[i].setUserID(1);
+			activator[i].setDateAddedtoPC(date1);
+			activator[i].setDateModified(null);
+			activator[i].setViewsCount(0);
+		}
+		
 		for (int i=0;i<2;i++)
 		{
 			 model[i] = new FCMModel();
@@ -284,8 +304,6 @@ public class FCMModels {
 			connection[i] = new FCMConnection();
 		}
 
-		Date date1=new Date();
-        
 		int modelID = getFCMModelID();
         int conceptID = getConceptID();
         int connectionID = getConnectionID();
@@ -346,10 +364,13 @@ public class FCMModels {
 			}
 			concept[i].setConceptID(conceptID+i);
 			concept[i].setDescription("");
-			concept[i].setActivator("");
+			concept[i].setActivatorID(1);
 			concept[i].setInput(0.0);
 			concept[i].setOutput(0.0);
-			concept[i].setFixedOutput(0.0);
+			concept[i].setFixedOutput(false);
+			concept[i].setMetricID(1);
+			concept[i].setPositionX((i+1)*100);
+			concept[i].setPositionY((i+1)*100);
 			concept[i].setUserID(1);
 			concept[i].setDateAddedtoPC(date1);
 			concept[i].setDateModified(null);
@@ -542,6 +563,10 @@ public class FCMModels {
         Session session = sessionFactory.getCurrentSession();
          
         session.beginTransaction();
+		for (int i=0;i<8;i++)
+		{
+			session.save(activator[i]);
+		}
 		for (int i=0;i<2;i++)
 		{
 	        session.save(model[i]);

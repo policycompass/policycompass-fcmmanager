@@ -72,4 +72,13 @@ public class FCMModelService {
 		return rb;
 	}
 
+	@GET
+	@Path("/activators")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response retrieveAllActivators() throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMConceptActivators.retrieveFCMActivatorList()).build();
+		return rb;
+	}
+
 }

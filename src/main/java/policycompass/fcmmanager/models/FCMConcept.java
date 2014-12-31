@@ -23,14 +23,20 @@ public class FCMConcept {
 	private String Title;
 	@Column(name = "Description", nullable = false)
 	private String Description;
-	@Column(name = "Activator", nullable = false)
-	private String Activator;
+	@Column(name = "ActivatorID", nullable = false)
+	private int ActivatorID;
 	@Column(name = "Input", nullable = false)
 	private double Input;
 	@Column(name = "Output", nullable = false)
 	private double Output;
 	@Column(name = "FixedOutput", nullable = false)
-	private double FixedOutput;
+	private boolean FixedOutput;
+	@Column(name = "MetricID", nullable = false)
+	private int MetricID;
+	@Column(name = "PositionX", nullable = false)
+	private int PositionX;
+	@Column(name = "PositionY", nullable = false)
+	private int PositionY;
 	@Column(name = "UserID", nullable = false)
 	private int UserID;
 	@Column(name = "DateAddedtoPC", nullable = false)
@@ -52,18 +58,27 @@ public class FCMConcept {
 	public String getDescription() { return Description; }
 	public void setDescription(String description) { this.Description = description; }
 
-	public String getActivator() { return Activator; }
-	public void setActivator(String activator) { this.Activator = activator; }
-
+	public int getActivatorID() { return ActivatorID; }
+	public void setActivatorID(int activatorID) { this.ActivatorID = activatorID; }
+	
 	public double getInput() { return Input; }
 	public void setInput(double input) { this.Input = input; }
 
 	public double getOutput() { return Output; }
 	public void setOutput(double output) { this.Output = output; }
 
-	public double getFixedOutput() { return FixedOutput; }
-	public void setFixedOutput(double fixedoutput) { this.FixedOutput = fixedoutput; }
+	public boolean getFixedOutput() { return FixedOutput; }
+	public void setFixedOutput(boolean fixedOutput) { FixedOutput = fixedOutput; }
+	
+	public int getMetricID() { return MetricID; }
+	public void setMetricID(int metricID) {this.MetricID = metricID; }
 
+	public int getPositionX() { return PositionX; }
+	public void setPositionX(int positionX) { PositionX = positionX; }
+
+	public int getPositionY() { return PositionY; }
+	public void setPositionY(int positionY) { PositionY = positionY; }
+	
 	public int getUserID() { return UserID; }
 	public void setUserID(int userid) { this.UserID = userid; }
 
