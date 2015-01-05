@@ -85,7 +85,10 @@ public class FCMModels {
 				con.setOutput(0.0);
 //				con.setFixedOutput(Double.parseDouble(ob.getString("fixedoutput")));
 				con.setFixedOutput(false);
-				con.setActivatorID(Integer.parseInt(ob.getString("activetor")));
+				con.setActivatorID(1);
+				con.setMetricID(1);
+				con.setPositionX(100);
+				con.setPositionY(100);
 				con.setDateAddedtoPC(date1);
 				con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 				con.setViewsCount(0);
