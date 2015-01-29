@@ -43,15 +43,17 @@ public class FCMModelService {
     @Produces({MediaType.APPLICATION_JSON})
     public Response createFCMModel(JSONObject fcmmodel) {
         return Response.ok(FCMModels.createFCMModel(fcmmodel)).build();     
+//        return Response.ok(fcmmodel).build();     
     }
 
     @PUT 
     @Path("/models/{id}")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response UpdateFCMModel(@PathParam("id") int id, JSONObject fcmmodel) {
-    	//FCMModels.createFCMModel(fcmmodel);            
-        return Response.ok(fcmmodel).build();     
+    public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel) {
+    	return Response.ok(FCMModels.updateFCMModel(id, fcmmodel)).build();
+//    	FCMModels.updateFCMModel(id, fcmmodel);
+//        return Response.ok(fcmmodel).build();     
     }
 
 

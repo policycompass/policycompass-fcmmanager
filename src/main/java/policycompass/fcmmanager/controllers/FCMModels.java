@@ -80,15 +80,13 @@ public class FCMModels {
 				con.setConceptID(conceptID+Integer.parseInt(ob.getString("Id").substring(1)));
 				con.setTitle(ob.getString("title"));
 				con.setDescription(ob.getString("description"));
-//				con.setInput(Double.parseDouble(ob.getString("input")));
-				con.setInput(0.0);
+				con.setInput(ob.getDouble("input"));
 				con.setOutput(0.0);
-//				con.setFixedOutput(Double.parseDouble(ob.getString("fixedoutput")));
-				con.setFixedOutput(false);
-				con.setActivatorID(1);
-				con.setMetricID(1);
-				con.setPositionX(100);
-				con.setPositionY(100);
+				con.setFixedOutput(ob.getBoolean("fixedoutput"));
+				con.setActivatorID(ob.getInt("activatorID"));
+				con.setMetricID(ob.getInt("metricsID"));
+				con.setPositionX(ob.getInt("x"));
+				con.setPositionY(ob.getInt("y"));
 				con.setDateAddedtoPC(date1);
 				con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 				con.setViewsCount(0);
@@ -139,6 +137,228 @@ public class FCMModels {
         return(retrieveFCMModel(modelID));
 	}	
 
+	public static FCMModelDetail updateFCMModel(int id, JSONObject jsonModel) {
+		List<FCMConcept> concept = new ArrayList<FCMConcept>();
+		List<FCMConnection> connection = new ArrayList<FCMConnection>();
+		Date date1=new Date();
+		JSONArray concepts= null;
+		JSONArray connections = null;
+		Boolean Found = false;
+		
+        int conceptID = getConceptID();
+        int connectionID = getConnectionID();
+        
+		SessionFactory sessionFactory;
+	    ServiceRegistry serviceRegistry;
+
+	    try {
+			concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
+			for(int i=0;i<concepts.length();i++){
+				FCMConcept con = new FCMConcept();
+				JSONObject ob= concepts.getJSONObject(i);
+				String ConID = ob.getString("Id");
+				if (ConID.substring(0,1).compareTo("n")==0)
+				{
+					con.setFCMModelID(id);
+					con.setConceptID(conceptID+Integer.parseInt(ConID.substring(1,ConID.length())));
+					con.setTitle(ob.getString("title"));
+					con.setDescription(ob.getString("description"));
+					con.setInput(ob.getDouble("input"));
+					con.setOutput(0.0);
+					con.setFixedOutput(ob.getBoolean("fixedoutput"));
+					con.setActivatorID(ob.getInt("activatorID"));
+					con.setMetricID(ob.getInt("metricsID"));
+					con.setPositionX(ob.getInt("x"));
+					con.setPositionY(ob.getInt("y"));
+					con.setDateAddedtoPC(date1);
+					con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
+					con.setViewsCount(0);
+					concept.add(con);
+				}
+			}			
+
+			connections = jsonModel.getJSONObject("data").getJSONArray("connections");
+			for(int i=0;i<connections.length();i++)
+			{
+				FCMConnection con = new FCMConnection();
+				JSONObject ob= connections.getJSONObject(i);
+				String AssID = ob.getString("Id");
+				String SourceID;
+				String DestinationID;
+
+				if (AssID.substring(0,1).compareTo("e")==0)
+				{
+					SourceID=ob.getString("sourceID");
+					DestinationID=ob.getString("destinationID");
+					con.setFCMModelID(id);
+					con.setConnectionID(connectionID+Integer.parseInt(AssID.substring(1,AssID.length())));
+					con.setTitle("Conection");
+					if (SourceID.substring(0,1).compareTo("n")==0)
+					{
+						con.setConceptFrom(conceptID+Integer.parseInt(SourceID.substring(1,SourceID.length())));
+					}
+					else
+					{
+						con.setConceptFrom(Integer.parseInt(SourceID));
+					}
+					if (DestinationID.substring(0,1).compareTo("n")==0)
+					{
+						con.setConceptTo(conceptID+Integer.parseInt(DestinationID.substring(1,DestinationID.length())));
+					}
+					else
+					{
+						con.setConceptTo(Integer.parseInt(DestinationID));
+					}
+					con.setWeighted(Double.parseDouble(ob.getString("weight")));
+					con.setDateAddedtoPC(date1);
+					con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
+					con.setViewsCount(0);
+					connection.add(con);
+				}
+			}			
+	    } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+		Configuration configuration = new Configuration();
+        configuration.configure();
+        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
+                        configuration.getProperties()).build();
+        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+        Session session = sessionFactory.getCurrentSession();
+         
+        session.beginTransaction();
+        Query qModel = session.createQuery("from fcmmanager_models where fcmmodelid= :id");
+        qModel.setInteger("id", id);
+        FCMModel model = (FCMModel) qModel.uniqueResult();
+        model.setDateModified(date1);
+        session.update(model);
+
+        Query qConcept = session.createQuery("from fcmmanager_concepts where fcmmodelid= :id");
+        qConcept.setInteger("id", id);
+        @SuppressWarnings("unchecked")
+        List<FCMConcept> conceptdb = qConcept.list();
+        
+        Query qConnection = session.createQuery("from fcmmanager_connections where fcmmodelid= :id");
+        qConnection.setInteger("id", id);
+        @SuppressWarnings("unchecked")
+        List<FCMConnection> connectiondb = qConnection.list();
+
+	    try 
+	    {
+	    	for (int i=0;i<conceptdb.size();i++)
+	    	{
+	    		for(int j=0;j<concepts.length();j++)
+	    		{
+	    			JSONObject ob = concepts.getJSONObject(j);
+	    			String ConID = ob.getString("Id");
+	    			if (ConID.substring(0,1).compareTo("n")!=0)
+	    			{
+	    				if (conceptdb.get(i).getConceptID()==Integer.parseInt(ConID))
+	    				{
+							conceptdb.get(i).setTitle(ob.getString("title"));
+	    					conceptdb.get(i).setDescription(ob.getString("description"));
+	    					conceptdb.get(i).setInput(ob.getDouble("input"));
+	    					conceptdb.get(i).setFixedOutput(ob.getBoolean("fixedoutput"));
+	    					conceptdb.get(i).setActivatorID(ob.getInt("activatorID"));
+	    					conceptdb.get(i).setMetricID(ob.getInt("metricsID"));
+	    					conceptdb.get(i).setPositionX(ob.getInt("x"));
+	    					conceptdb.get(i).setPositionY(ob.getInt("y"));
+	    					conceptdb.get(i).setDateModified(date1);
+	    					conceptdb.get(i).setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
+	    					Found=true;
+	    				}
+	    			}
+	    		}
+			
+				if (Found==false)
+				{
+		        	session.delete(conceptdb.get(i));
+				}
+				else
+				{
+		        	session.update(conceptdb.get(i));
+		        	Found=false;
+				}
+	    	}
+
+	    } catch (JSONException e) 
+	    {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try 
+	    {
+	    	for (int i=0;i<connectiondb.size();i++)
+	    	{
+				for(int j=0;j<connections.length();j++)
+				{
+					JSONObject ob= connections.getJSONObject(j);
+					String AssID = ob.getString("Id");
+					String SourceID;
+					String DestinationID;
+
+					if (AssID.substring(0,1).compareTo("e")!=0)
+	    			{
+	    				if (connectiondb.get(i).getConnectionID()==Integer.parseInt(AssID))
+	    				{
+	    					SourceID=ob.getString("sourceID");
+	    					DestinationID=ob.getString("destinationID");
+	    					if (SourceID.substring(0,1).compareTo("n")==0)
+	    					{
+	    						connectiondb.get(i).setConceptFrom(conceptID+Integer.parseInt(SourceID.substring(1,SourceID.length())));
+	    					}
+	    					else
+	    					{
+	    						connectiondb.get(i).setConceptFrom(Integer.parseInt(SourceID));
+	    					}
+	    					if (DestinationID.substring(0,1).compareTo("n")==0)
+	    					{
+	    						connectiondb.get(i).setConceptTo(conceptID+Integer.parseInt(DestinationID.substring(1,DestinationID.length())));
+	    					}
+	    					else
+	    					{
+	    						connectiondb.get(i).setConceptTo(Integer.parseInt(DestinationID));
+	    					}
+	    					connectiondb.get(i).setWeighted(Double.parseDouble(ob.getString("weight")));
+	    					connectiondb.get(i).setDateModified(date1);
+	    					connectiondb.get(i).setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
+	    					Found=true;
+	    				}
+	    			}
+				}
+				if (Found==false)
+				{
+		        	session.delete(connectiondb.get(i));
+				}
+				else
+				{
+		        	session.update(connectiondb.get(i));
+		        	Found=false;
+				}
+	    	}
+	    } catch (JSONException e) 
+	    {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    for (int i=0;i<concept.size();i++)
+		{
+	        session.save(concept.get(i));
+		}
+		for (int i=0;i<connection.size();i++)
+		{
+	        session.save(connection.get(i));
+		}
+        session.getTransaction().commit();
+        sessionFactory.close();
+
+        return(retrieveFCMModel(id));
+//        return(rtnStr);
+	}
+	
 	public static void deleteFCMModel(int id) {
 		SessionFactory sessionFactory;
 	    ServiceRegistry serviceRegistry;
