@@ -9,14 +9,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "FCM Models")
-@XmlType(propOrder = { "fcmmodelid", "title", "description", "keywords", "userID", "DateAddedtoPC", "DateModified", "viewsCount" })
+@XmlType(propOrder = { "id", "title", "description", "keywords", "userID", "DateAddedtoPC", "DateModified", "viewsCount" })
 
 @Entity (name="fcmmanager_models")
 public class FCMModel {
 
 	@Id
-	@Column(name = "FCMModelID", unique = true, nullable = false)
-	private int FCMModelID;
+	@Column(name = "id", unique = true, nullable = false)
+	private int id;
 	@Column(name = "Title", nullable = false)
 	private String Title;
 	@Column(name = "Description", nullable = false)
@@ -27,13 +27,13 @@ public class FCMModel {
 	private int UserID;
 	@Column(name = "DateAddedtoPC", nullable = false)
 	private Date DateAddedtoPC;
-	@Column(name = "DateModified", nullable = true)
+	@Column(name = "DateModified", nullable = false)
 	private Date DateModified;
 	@Column(name = "ViewsCount", nullable = false)
 	private int ViewsCount;
 	
 	public FCMModel() {
-		this.FCMModelID = 0;
+		this.id = 0;
 		this.Title = "";
 		this.Description = "";
 		this.Keywords = "";
@@ -41,8 +41,8 @@ public class FCMModel {
 		this.ViewsCount = 0;
 	}
 
-	public FCMModel(int id, String title, String description, String keywords, int userid, int viewscount) {
-		this.FCMModelID = id;
+	public FCMModel(int fcmid, String title, String description, String keywords, int userid, int viewscount) {
+		this.id = fcmid;
 		this.Title = title;
 		this.Description = description;
 		this.Keywords = keywords;
@@ -50,8 +50,8 @@ public class FCMModel {
 		this.ViewsCount = viewscount;
 	}
 
-	public int getFCMModelID() { return FCMModelID; }
-	public void setFCMModelID(int id) { this.FCMModelID = id; }
+	public int getId() { return id; }
+	public void setId(int fcmid) { this.id = fcmid; }
 
 	public String getTitle() { return Title; }
 	public void setTitle(String title) { this.Title = title; }
@@ -75,5 +75,5 @@ public class FCMModel {
 	public void setViewsCount(int viewscount) { this.ViewsCount = viewscount; }
 
 	@Override
-	public String toString() { return getFCMModelID() + ", " + getTitle() + ", " + getDescription(); }
+	public String toString() { return getId() + ", " + getTitle() + ", " + getDescription(); }
 }

@@ -10,38 +10,30 @@ public class HibernateUtil {
 
     private static SessionFactory sessionFactory;
 
-    private static ServiceRegistry serviceRegistry;
-
-    static {
-
-            try {
-
-                    Configuration configuration = new Configuration();
-                    configuration.configure();
-                    serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-                                    configuration.getProperties()).build();
-                    sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-
-            } catch (Throwable th) {
-
-                    System.err.println("Enitial SessionFactory creation failed" + th);
-
-                    throw new ExceptionInInitializerError(th);
-
-            }
-
+    static  
+    {
+    	try 
+    	{
+    		if (sessionFactory == null)
+    		{
+	            Configuration configuration = new Configuration().configure(HibernateUtil.class.getResource("/hibernate.cfg.xml"));
+	            StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
+	            serviceRegistryBuilder.applySettings(configuration.getProperties());
+	            ServiceRegistry serviceRegistry =  serviceRegistryBuilder.build();
+	            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+    		}
+    	} catch (Throwable th) {
+            System.err.println("Initial SessionFactory creation failed." + th);
+            throw new ExceptionInInitializerError(th);
+    	}
     }
 
-    public static SessionFactory getSessionFactory() {
-
-            return sessionFactory;
-
-    }
+    public static SessionFactory getSessionFactory() { return sessionFactory; }
 
     public static void closeSessionFactory() {
     	if (sessionFactory != null) {
     		try {
-    			StandardServiceRegistryBuilder.destroy(serviceRegistry);
+    			getSessionFactory().close();
     		} catch (Exception e) {
     			e.printStackTrace();
     		}

@@ -3,26 +3,21 @@ package policycompass.fcmmanager.models;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name = "FCM Connections")
-@XmlType(propOrder = { "id", "FCMModel_id", "ConceptFrom", "ConceptTo", "UserID", "DateAddedtoPC", "DateModified", "ViewsCount" })
-
-@Entity (name="fcmmanager_connections")
-public class FCMConnection {
+public class FCMSimulationConnection {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "ConnectionID", unique = true, nullable = false)
+	private int ConnectionID;
+	@Column(name = "id", nullable = false)
 	private int id;
-	@Column(name = "FCMModel_id", nullable = false)
-	private int FCMModel_id;
 	@Column(name = "ConceptFrom", nullable = false)
 	private int ConceptFrom;
 	@Column(name = "ConceptTo", nullable = false)
 	private int ConceptTo;
+	@Column(name = "Weighted", nullable = false)
+	private double Weighted;
 	@Column(name = "UserID", nullable = false)
 	private int UserID;
 	@Column(name = "DateAddedtoPC", nullable = false)
@@ -32,15 +27,15 @@ public class FCMConnection {
 	@Column(name = "ViewsCount", nullable = false)
 	private int ViewsCount;
 
-	public int getId() {
-		return id;
+	public int getConnectionID() {
+		return ConnectionID;
 	}
-	public void setId(int connectionID) {
-		id = connectionID;
+	public void setConnectionID(int connectionID) {
+		ConnectionID = connectionID;
 	}
 
-	public int getFCMModelID() { return FCMModel_id; }
-	public void setFCMModelID(int fcmid) { this.FCMModel_id = fcmid; }
+	public int getId() { return id; }
+	public void setId(int fcmid) { this.id = fcmid; }
 
 	public int getConceptFrom() {
 		return ConceptFrom;
@@ -53,6 +48,12 @@ public class FCMConnection {
 	}
 	public void setConceptTo(int conceptTo) {
 		ConceptTo = conceptTo;
+	}
+	public double getWeighted() {
+		return Weighted;
+	}
+	public void setWeighted(double weighted) {
+		Weighted = weighted;
 	}
 	public int getUserID() {
 		return UserID;

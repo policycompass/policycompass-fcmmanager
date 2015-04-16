@@ -10,12 +10,9 @@ import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Projections;
-import org.hibernate.service.ServiceRegistry;
 
+import policycompass.fcmmanager.hibernate.HibernateUtil;
 import policycompass.fcmmanager.models.*;;
 
 public class FCMModels {
@@ -27,23 +24,13 @@ public class FCMModels {
 	}	
 
 	public static List<FCMModel> retrieveFCMModelList() {
-		SessionFactory sessionFactory;
-	    ServiceRegistry serviceRegistry;
-
-		Configuration configuration = new Configuration();
-        configuration.configure();
-        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-                        configuration.getProperties()).build();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
          
         session.beginTransaction();
         Query query = session.createQuery("from fcmmanager_models");
         @SuppressWarnings("unchecked")
         List<FCMModel> model = query.list();
         session.clear();
-        sessionFactory.close();			
-        
 		return model;
 	}	
 
@@ -59,16 +46,14 @@ public class FCMModels {
         int conceptID = getConceptID();
         int connectionID = getConnectionID();
         
-		SessionFactory sessionFactory;
-	    ServiceRegistry serviceRegistry;
-
 	    try {
-		    model.setFCMModelID(modelID);
+		    model.setId(modelID);
 			model.setTitle(jsonModel.getJSONObject("data").get("ModelTitle").toString());
 			model.setDescription(jsonModel.getJSONObject("data").get("ModelDesc").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").get("ModelKeywords").toString());
 			model.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 			model.setDateAddedtoPC(date1);
+			model.setDateModified(date1);
 			model.setViewsCount(0);
 			
 			JSONArray concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
@@ -77,17 +62,14 @@ public class FCMModels {
 				JSONObject ob= concepts.getJSONObject(i);
 				
 				con.setFCMModelID(modelID);
-				con.setConceptID(conceptID+Integer.parseInt(ob.getString("Id").substring(1)));
+				con.setId(conceptID+Integer.parseInt(ob.getString("Id").substring(1)));
 				con.setTitle(ob.getString("title"));
 				con.setDescription(ob.getString("description"));
-				con.setInput(ob.getDouble("input"));
-				con.setOutput(0.0);
-				con.setFixedOutput(ob.getBoolean("fixedoutput"));
-				con.setActivatorID(ob.getInt("activatorID"));
-				con.setMetricID(ob.getInt("metricsID"));
+				con.setScale(ob.getInt("scale"));
 				con.setPositionX(ob.getInt("x"));
 				con.setPositionY(ob.getInt("y"));
 				con.setDateAddedtoPC(date1);
+				con.setDateModified(date1);
 				con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 				con.setViewsCount(0);
 				concept.add(con);
@@ -99,12 +81,11 @@ public class FCMModels {
 				JSONObject ob= connections.getJSONObject(i);
 				
 				con.setFCMModelID(modelID);
-				con.setConnectionID(connectionID+Integer.parseInt(ob.getString("Id").substring(1)));
-				con.setTitle("Conection");
+				con.setId(connectionID+Integer.parseInt(ob.getString("Id").substring(1)));
 				con.setConceptFrom(conceptID+Integer.parseInt(ob.getJSONObject("source").getString("Id").substring(1)));
 				con.setConceptTo(conceptID+Integer.parseInt(ob.getJSONObject("destination").getString("Id").substring(1)));
-				con.setWeighted(Double.parseDouble(ob.getString("weight")));
 				con.setDateAddedtoPC(date1);
+				con.setDateModified(date1);
 				con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 				con.setViewsCount(0);
 				connection.add(con);
@@ -114,12 +95,7 @@ public class FCMModels {
 			e.printStackTrace();
 		}
 	    
-	    Configuration configuration = new Configuration();
-        configuration.configure();
-        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-                        configuration.getProperties()).build();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
          
         session.beginTransaction();
         session.save(model);
@@ -132,8 +108,7 @@ public class FCMModels {
 	        session.save(connection.get(i));
 		}
         session.getTransaction().commit();
-        sessionFactory.close();			
-	
+        
         return(retrieveFCMModel(modelID));
 	}	
 
@@ -148,9 +123,6 @@ public class FCMModels {
         int conceptID = getConceptID();
         int connectionID = getConnectionID();
         
-		SessionFactory sessionFactory;
-	    ServiceRegistry serviceRegistry;
-
 	    try {
 			concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
 			for(int i=0;i<concepts.length();i++){
@@ -160,17 +132,14 @@ public class FCMModels {
 				if (ConID.substring(0,1).compareTo("n")==0)
 				{
 					con.setFCMModelID(id);
-					con.setConceptID(conceptID+Integer.parseInt(ConID.substring(1,ConID.length())));
+					con.setId(conceptID+Integer.parseInt(ConID.substring(1,ConID.length())));
 					con.setTitle(ob.getString("title"));
 					con.setDescription(ob.getString("description"));
-					con.setInput(ob.getDouble("input"));
-					con.setOutput(0.0);
-					con.setFixedOutput(ob.getBoolean("fixedoutput"));
-					con.setActivatorID(ob.getInt("activatorID"));
-					con.setMetricID(ob.getInt("metricsID"));
+					con.setScale(ob.getInt("scale"));
 					con.setPositionX(ob.getInt("x"));
 					con.setPositionY(ob.getInt("y"));
 					con.setDateAddedtoPC(date1);
+					con.setDateModified(date1);
 					con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 					con.setViewsCount(0);
 					concept.add(con);
@@ -191,8 +160,7 @@ public class FCMModels {
 					SourceID=ob.getString("sourceID");
 					DestinationID=ob.getString("destinationID");
 					con.setFCMModelID(id);
-					con.setConnectionID(connectionID+Integer.parseInt(AssID.substring(1,AssID.length())));
-					con.setTitle("Conection");
+					con.setId(connectionID+Integer.parseInt(AssID.substring(1,AssID.length())));
 					if (SourceID.substring(0,1).compareTo("n")==0)
 					{
 						con.setConceptFrom(conceptID+Integer.parseInt(SourceID.substring(1,SourceID.length())));
@@ -209,8 +177,8 @@ public class FCMModels {
 					{
 						con.setConceptTo(Integer.parseInt(DestinationID));
 					}
-					con.setWeighted(Double.parseDouble(ob.getString("weight")));
 					con.setDateAddedtoPC(date1);
+					con.setDateModified(date1);
 					con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 					con.setViewsCount(0);
 					connection.add(con);
@@ -221,26 +189,21 @@ public class FCMModels {
 			e.printStackTrace();
 		}
 	    
-		Configuration configuration = new Configuration();
-        configuration.configure();
-        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-                        configuration.getProperties()).build();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
          
         session.beginTransaction();
-        Query qModel = session.createQuery("from fcmmanager_models where fcmmodelid= :id");
+        Query qModel = session.createQuery("from fcmmanager_models where id= :id");
         qModel.setInteger("id", id);
         FCMModel model = (FCMModel) qModel.uniqueResult();
         model.setDateModified(date1);
         session.update(model);
 
-        Query qConcept = session.createQuery("from fcmmanager_concepts where fcmmodelid= :id");
+        Query qConcept = session.createQuery("from fcmmanager_concepts where FCMModel_id= :id");
         qConcept.setInteger("id", id);
         @SuppressWarnings("unchecked")
         List<FCMConcept> conceptdb = qConcept.list();
         
-        Query qConnection = session.createQuery("from fcmmanager_connections where fcmmodelid= :id");
+        Query qConnection = session.createQuery("from fcmmanager_connections where FCMModel_id= :id");
         qConnection.setInteger("id", id);
         @SuppressWarnings("unchecked")
         List<FCMConnection> connectiondb = qConnection.list();
@@ -255,14 +218,11 @@ public class FCMModels {
 	    			String ConID = ob.getString("Id");
 	    			if (ConID.substring(0,1).compareTo("n")!=0)
 	    			{
-	    				if (conceptdb.get(i).getConceptID()==Integer.parseInt(ConID))
+	    				if (conceptdb.get(i).getId()==Integer.parseInt(ConID))
 	    				{
 							conceptdb.get(i).setTitle(ob.getString("title"));
 	    					conceptdb.get(i).setDescription(ob.getString("description"));
-	    					conceptdb.get(i).setInput(ob.getDouble("input"));
-	    					conceptdb.get(i).setFixedOutput(ob.getBoolean("fixedoutput"));
-	    					conceptdb.get(i).setActivatorID(ob.getInt("activatorID"));
-	    					conceptdb.get(i).setMetricID(ob.getInt("metricsID"));
+	    					conceptdb.get(i).setScale(ob.getInt("scale"));
 	    					conceptdb.get(i).setPositionX(ob.getInt("x"));
 	    					conceptdb.get(i).setPositionY(ob.getInt("y"));
 	    					conceptdb.get(i).setDateModified(date1);
@@ -302,7 +262,7 @@ public class FCMModels {
 
 					if (AssID.substring(0,1).compareTo("e")!=0)
 	    			{
-	    				if (connectiondb.get(i).getConnectionID()==Integer.parseInt(AssID))
+	    				if (connectiondb.get(i).getId()==Integer.parseInt(AssID))
 	    				{
 	    					SourceID=ob.getString("sourceID");
 	    					DestinationID=ob.getString("destinationID");
@@ -322,7 +282,6 @@ public class FCMModels {
 	    					{
 	    						connectiondb.get(i).setConceptTo(Integer.parseInt(DestinationID));
 	    					}
-	    					connectiondb.get(i).setWeighted(Double.parseDouble(ob.getString("weight")));
 	    					connectiondb.get(i).setDateModified(date1);
 	    					connectiondb.get(i).setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 	    					Found=true;
@@ -353,34 +312,25 @@ public class FCMModels {
 	        session.save(connection.get(i));
 		}
         session.getTransaction().commit();
-        sessionFactory.close();
 
         return(retrieveFCMModel(id));
 //        return(rtnStr);
 	}
 	
 	public static void deleteFCMModel(int id) {
-		SessionFactory sessionFactory;
-	    ServiceRegistry serviceRegistry;
-
-		Configuration configuration = new Configuration();
-        configuration.configure();
-        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-                        configuration.getProperties()).build();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
          
         session.beginTransaction();
-        Query qModel = session.createQuery("from fcmmanager_models where fcmmodelid= :id");
+        Query qModel = session.createQuery("from fcmmanager_models where id= :id");
         qModel.setInteger("id", id);
         FCMModel model = (FCMModel) qModel.uniqueResult();
         
-        Query qConcept = session.createQuery("from fcmmanager_concepts where fcmmodelid= :id");
+        Query qConcept = session.createQuery("from fcmmanager_concepts where FCMModel_id= :id");
         qConcept.setInteger("id", id);
         @SuppressWarnings("unchecked")
         List<FCMConcept> concept = qConcept.list();
         
-        Query qConnection = session.createQuery("from fcmmanager_connections where fcmmodelid= :id");
+        Query qConnection = session.createQuery("from fcmmanager_connections where FCMModel_id= :id");
         qConnection.setInteger("id", id);
         @SuppressWarnings("unchecked")
         List<FCMConnection> connection = qConnection.list();
@@ -395,56 +345,36 @@ public class FCMModels {
 	        session.delete(connection.get(i));
 		}
         session.getTransaction().commit();
-        sessionFactory.close();			
 	}
 	
 	public static int getFCMModelID() {
 		int modelID=0;
 		
-		SessionFactory sessionFactory;
-	    ServiceRegistry serviceRegistry;
-
-	    Configuration configuration = new Configuration();
-        configuration.configure();
-        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-                        configuration.getProperties()).build();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
 
         session.beginTransaction();
         Criteria criteria = session
 	    .createCriteria(FCMModel.class)
-	    .setProjection(Projections.max("FCMModelID"));
+	    .setProjection(Projections.max("id"));
         if (criteria.uniqueResult()==null)
         {
         	modelID=0;
         } else {
             modelID = (Integer)criteria.uniqueResult();
         }
-        	
         session.close();
-        sessionFactory.close();			
-        
 		return (modelID+1);
 	}
 	
 	public static int getConceptID() {
 		int conceptID=0;
 		
-		SessionFactory sessionFactory;
-	    ServiceRegistry serviceRegistry;
-
-	    Configuration configuration = new Configuration();
-        configuration.configure();
-        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-                        configuration.getProperties()).build();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
 
         session.beginTransaction();
         Criteria criteria = session
 	    .createCriteria(FCMConcept.class)
-	    .setProjection(Projections.max("ConceptID"));
+	    .setProjection(Projections.max("id"));
         if (criteria.uniqueResult()==null)
         {
         	conceptID=0;
@@ -452,28 +382,18 @@ public class FCMModels {
             conceptID = (Integer)criteria.uniqueResult();
         }
         session.close();
-        sessionFactory.close();			
-        
 		return (conceptID+1);
 	}
 	
 	public static int getConnectionID() {
 		int connectionID=0;
 		
-		SessionFactory sessionFactory;
-	    ServiceRegistry serviceRegistry;
-
-	    Configuration configuration = new Configuration();
-        configuration.configure();
-        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-                        configuration.getProperties()).build();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
 
         session.beginTransaction();
         Criteria criteria = session
 	    .createCriteria(FCMConnection.class)
-	    .setProjection(Projections.max("ConnectionID"));
+	    .setProjection(Projections.max("id"));
         if (criteria.uniqueResult()==null)
         {
         	connectionID=0;
@@ -481,8 +401,6 @@ public class FCMModels {
             connectionID = (Integer)criteria.uniqueResult();
         }
         session.close();
-        sessionFactory.close();			
-        
 		return (connectionID+1);
 	}
 	
@@ -507,10 +425,10 @@ public class FCMModels {
 		activator[7].setTitle("Signum Activator");
 		for (int i=0;i<8;i++)
 		{
-			activator[i].setActivatorID(i+1);
+			activator[i].setId(i+1);
 			activator[i].setUserID(1);
 			activator[i].setDateAddedtoPC(date1);
-			activator[i].setDateModified(null);
+			activator[i].setDateModified(date1);
 			activator[i].setViewsCount(0);
 		}
 		
@@ -541,10 +459,10 @@ public class FCMModels {
 
 		for (int i=0;i<2;i++)
 		{
-			model[i].setFCMModelID(modelID+i);
+			model[i].setId(modelID+i);
 			model[i].setUserID(1);
 			model[i].setDateAddedtoPC(date1);
-			model[i].setDateModified(null);
+			model[i].setDateModified(date1);
 			model[i].setViewsCount(0);
 		}
 		
@@ -585,180 +503,136 @@ public class FCMModels {
 			} else {
 				concept[i].setFCMModelID(modelID+1);
 			}
-			concept[i].setConceptID(conceptID+i);
+			concept[i].setId(conceptID+i);
 			concept[i].setDescription("");
-			concept[i].setActivatorID(1);
-			concept[i].setInput(0.0);
-			concept[i].setOutput(0.0);
-			concept[i].setFixedOutput(false);
-			concept[i].setMetricID(1);
+			concept[i].setScale(5);
 			concept[i].setPositionX((i+1)*100);
 			concept[i].setPositionY((i+1)*100);
 			concept[i].setUserID(1);
 			concept[i].setDateAddedtoPC(date1);
-			concept[i].setDateModified(null);
+			concept[i].setDateModified(date1);
 			concept[i].setViewsCount(0);
 		}
 		
 		connection[0].setConceptFrom(conceptID-1+1);
 		connection[0].setConceptTo(conceptID-1+4);
-		connection[0].setWeighted(0.4);
 
 		connection[1].setConceptFrom(conceptID-1+1);
 		connection[1].setConceptTo(conceptID-1+5);
-		connection[1].setWeighted(0.8);
 
 		connection[2].setConceptFrom(conceptID-1+2);
 		connection[2].setConceptTo(conceptID-1+5);
-		connection[2].setWeighted(0.2);
 
 		connection[3].setConceptFrom(conceptID-1+3);
 		connection[3].setConceptTo(conceptID-1+11);
-		connection[3].setWeighted(0.8);
 
 		connection[4].setConceptFrom(conceptID-1+4);
 		connection[4].setConceptTo(conceptID-1+8);
-		connection[4].setWeighted(0.8);
 
 		connection[5].setConceptFrom(conceptID-1+5);
 		connection[5].setConceptTo(conceptID-1+10);
-		connection[5].setWeighted(0.5);
 
 		connection[6].setConceptFrom(conceptID-1+6);
 		connection[6].setConceptTo(conceptID-1+10);
-		connection[6].setWeighted(0.7);
 
 		connection[7].setConceptFrom(conceptID-1+7);
 		connection[7].setConceptTo(conceptID-1+14);
-		connection[7].setWeighted(0.5);
 
 		connection[8].setConceptFrom(conceptID-1+7);
 		connection[8].setConceptTo(conceptID-1+15);
-		connection[8].setWeighted(0.9);
 
 		connection[9].setConceptFrom(conceptID-1+8);
 		connection[9].setConceptTo(conceptID-1+9);
-		connection[9].setWeighted(0.5);
 
 		connection[10].setConceptFrom(conceptID-1+8);
 		connection[10].setConceptTo(conceptID-1+16);
-		connection[10].setWeighted(0.4);
 
 		connection[11].setConceptFrom(conceptID-1+9);
 		connection[11].setConceptTo(conceptID-1+17);
-		connection[11].setWeighted(0.8);
 
 		connection[12].setConceptFrom(conceptID-1+10);
 		connection[12].setConceptTo(conceptID-1+9);
-		connection[12].setWeighted(0.5);
 
 		connection[13].setConceptFrom(conceptID-1+10);
 		connection[13].setConceptTo(conceptID-1+16);
-		connection[13].setWeighted(0.5);
 
 		connection[14].setConceptFrom(conceptID-1+11);
 		connection[14].setConceptTo(conceptID-1+16);
-		connection[14].setWeighted(0.5);
 
 		connection[15].setConceptFrom(conceptID-1+11);
 		connection[15].setConceptTo(conceptID-1+17);
-		connection[15].setWeighted(0.5);
 
 		connection[16].setConceptFrom(conceptID-1+12);
 		connection[16].setConceptTo(conceptID-1+11);
-		connection[16].setWeighted(0.5);
 
 		connection[17].setConceptFrom(conceptID-1+12);
 		connection[17].setConceptTo(conceptID-1+17);
-		connection[17].setWeighted(0.5);
 
 		connection[18].setConceptFrom(conceptID-1+13);
 		connection[18].setConceptTo(conceptID-1+17);
-		connection[18].setWeighted(0.5);
 
 		connection[19].setConceptFrom(conceptID-1+11);
 		connection[19].setConceptTo(conceptID-1+9);
-		connection[19].setWeighted(0.5);
 
 		connection[20].setConceptFrom(conceptID-1+15);
 		connection[20].setConceptTo(conceptID-1+14);
-		connection[20].setWeighted(0.7);
 
 		connection[21].setConceptFrom(conceptID-1+18);
 		connection[21].setConceptTo(conceptID-1+22);
-		connection[21].setWeighted(-0.2);
 
 		connection[22].setConceptFrom(conceptID-1+18);
 		connection[22].setConceptTo(conceptID-1+23);
-		connection[22].setWeighted(0.8);
 
 		connection[23].setConceptFrom(conceptID-1+19);
 		connection[23].setConceptTo(conceptID-1+22);
-		connection[23].setWeighted(-0.3);
 
 		connection[24].setConceptFrom(conceptID-1+19);
 		connection[24].setConceptTo(conceptID-1+23);
-		connection[24].setWeighted(0.4);
 
 		connection[25].setConceptFrom(conceptID-1+19);
 		connection[25].setConceptTo(conceptID-1+24);
-		connection[25].setWeighted(0.7);
 
 		connection[26].setConceptFrom(conceptID-1+20);
 		connection[26].setConceptTo(conceptID-1+22);
-		connection[26].setWeighted(0.1);
 
 		connection[27].setConceptFrom(conceptID-1+20);
 		connection[27].setConceptTo(conceptID-1+23);
-		connection[27].setWeighted(0.2);
 
 		connection[28].setConceptFrom(conceptID-1+20);
 		connection[28].setConceptTo(conceptID-1+24);
-		connection[28].setWeighted(0.4);
 
 		connection[29].setConceptFrom(conceptID-1+21);
 		connection[29].setConceptTo(conceptID-1+24);
-		connection[29].setWeighted(0.6);
 
 		connection[30].setConceptFrom(conceptID-1+22);
 		connection[30].setConceptTo(conceptID-1+25);
-		connection[30].setWeighted(0.1);
 
 		connection[31].setConceptFrom(conceptID-1+22);
 		connection[31].setConceptTo(conceptID-1+26);
-		connection[31].setWeighted(0.1);
 
 		connection[32].setConceptFrom(conceptID-1+23);
 		connection[32].setConceptTo(conceptID-1+27);
-		connection[32].setWeighted(0.3);
 
 		connection[33].setConceptFrom(conceptID-1+24);
 		connection[33].setConceptTo(conceptID-1+27);
-		connection[33].setWeighted(0.4);
 
 		connection[34].setConceptFrom(conceptID-1+25);
 		connection[34].setConceptTo(conceptID-1+28);
-		connection[34].setWeighted(0.4);
 
 		connection[35].setConceptFrom(conceptID-1+26);
 		connection[35].setConceptTo(conceptID-1+29);
-		connection[35].setWeighted(0.5);
 
 		connection[36].setConceptFrom(conceptID-1+27);
 		connection[36].setConceptTo(conceptID-1+29);
-		connection[36].setWeighted(0.4);
 
 		connection[37].setConceptFrom(conceptID-1+28);
 		connection[37].setConceptTo(conceptID-1+26);
-		connection[37].setWeighted(0.6);
 
 		connection[38].setConceptFrom(conceptID-1+28);
 		connection[38].setConceptTo(conceptID-1+27);
-		connection[38].setWeighted(0.3);
 
 		connection[39].setConceptFrom(conceptID-1+28);
 		connection[39].setConceptTo(conceptID-1+29);
-		connection[39].setWeighted(0.6);
 
 		for (int i=0;i<40;i++)
 		{
@@ -767,23 +641,14 @@ public class FCMModels {
 			} else {
 				connection[i].setFCMModelID(modelID+1);
 			}
-			connection[i].setTitle("Connection-" + (connectionID+i));
-			connection[i].setConnectionID(connectionID+i);
+			connection[i].setId(connectionID+i);
 			connection[i].setUserID(1);
 			connection[i].setDateAddedtoPC(date1);
-			connection[i].setDateModified(null);
+			connection[i].setDateModified(date1);
 			connection[i].setViewsCount(0);
 		}
          
-		SessionFactory sessionFactory;
-	    ServiceRegistry serviceRegistry;
-
-		Configuration configuration = new Configuration();
-        configuration.configure();
-        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-                        configuration.getProperties()).build();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
          
         session.beginTransaction();
 		for (int i=0;i<8;i++)
@@ -803,7 +668,6 @@ public class FCMModels {
 	        session.save(connection[i]);
 		}
         session.getTransaction().commit();
-        sessionFactory.close();
         return model[0];
 	}		
 }

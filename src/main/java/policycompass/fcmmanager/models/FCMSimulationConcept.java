@@ -3,28 +3,29 @@ package policycompass.fcmmanager.models;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name = "FCM Concepts")
-@XmlType(propOrder = { "id", "FCMModel_id", "Title", "Description", "Scale", "UserID", "DateAddedtoPC", "DateModified", "ViewsCount" })
-
-@Entity (name="fcmmanager_concepts")
-public class FCMConcept {
+public class FCMSimulationConcept {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "ConceptID", unique = true, nullable = false)
+	private int ConceptID;
+	@Column(name = "id", nullable = false)
 	private int id;
-	@Column(name = "FCMModel_id", nullable = false)
-	private int FCMModel_id;
 	@Column(name = "Title", nullable = false)
 	private String Title;
 	@Column(name = "Description", nullable = false)
 	private String Description;
-	@Column(name = "Scale", nullable = false)
-	private int Scale;
+	@Column(name = "ActivatorID", nullable = false)
+	private int ActivatorID;
+	@Column(name = "Input", nullable = false)
+	private double Input;
+	@Column(name = "Output", nullable = false)
+	private double Output;
+	@Column(name = "FixedOutput", nullable = false)
+	private boolean FixedOutput;
+	@Column(name = "MetricID", nullable = false)
+	private int MetricID;
 	@Column(name = "PositionX", nullable = false)
 	private int PositionX;
 	@Column(name = "PositionY", nullable = false)
@@ -33,16 +34,16 @@ public class FCMConcept {
 	private int UserID;
 	@Column(name = "DateAddedtoPC", nullable = false)
 	private Date DateAddedtoPC;
-	@Column(name = "DateModified", nullable = false)
+	@Column(name = "DateModified", nullable = true)
 	private Date DateModified;
 	@Column(name = "ViewsCount", nullable = false)
 	private int ViewsCount;
 
-	public int getId() { return id; }
-	public void setId(int cid) { this.id = cid; }
+	public int getConceptID() { return ConceptID; }
+	public void setConceptID(int id) { this.ConceptID = id; }
 
-	public int getFCMModelID() { return FCMModel_id; }
-	public void setFCMModelID(int fcmid) { this.FCMModel_id = fcmid; }
+	public int getFCMModelID() { return id; }
+	public void setFCMModelID(int fcmid) { this.id = fcmid; }
 
 	public String getTitle() { return Title; }
 	public void setTitle(String title) { this.Title = title; }
@@ -50,8 +51,20 @@ public class FCMConcept {
 	public String getDescription() { return Description; }
 	public void setDescription(String description) { this.Description = description; }
 
-	public int getScale() { return Scale; }
-	public void setScale(int scale) { this.Scale = scale; }
+	public int getActivatorID() { return ActivatorID; }
+	public void setActivatorID(int activatorID) { this.ActivatorID = activatorID; }
+	
+	public double getInput() { return Input; }
+	public void setInput(double input) { this.Input = input; }
+
+	public double getOutput() { return Output; }
+	public void setOutput(double output) { this.Output = output; }
+
+	public boolean getFixedOutput() { return FixedOutput; }
+	public void setFixedOutput(boolean fixedOutput) { FixedOutput = fixedOutput; }
+	
+	public int getMetricID() { return MetricID; }
+	public void setMetricID(int metricID) {this.MetricID = metricID; }
 
 	public int getPositionX() { return PositionX; }
 	public void setPositionX(int positionX) { PositionX = positionX; }

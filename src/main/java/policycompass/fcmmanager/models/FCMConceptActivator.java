@@ -9,14 +9,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "FCM Concept Activator")
-@XmlType(propOrder = { "ActivatorID", "Title", "UserID", "DateAddedtoPC", "DateModified", "ViewsCount" })
+@XmlType(propOrder = { "id", "Title", "UserID", "DateAddedtoPC", "DateModified", "ViewsCount" })
 
 @Entity (name="fcmmanager_conceptactivators")
 public class FCMConceptActivator {
 
 	@Id
-	@Column(name = "ActivatorID", unique = true, nullable = false)
-	private int ActivatorID;
+	@Column(name = "id", unique = true, nullable = false)
+	private int id;
 	@Column(name = "Title", nullable = false)
 	private String Title;
 	@Column(name = "UserID", nullable = false)
@@ -28,8 +28,8 @@ public class FCMConceptActivator {
 	@Column(name = "ViewsCount", nullable = false)
 	private int ViewsCount;
 
-	public int getActivatorID() { return ActivatorID; }
-	public void setActivatorID(int activatorID) { this.ActivatorID = activatorID; }
+	public int getId() { return id; }
+	public void setId(int activatorID) { this.id = activatorID; }
 
 	public String getTitle() { return Title; }
 	public void setTitle(String title) { this.Title = title; }
@@ -47,5 +47,5 @@ public class FCMConceptActivator {
 	public void setViewsCount(int viewscount) { this.ViewsCount = viewscount; }
 
 	@Override
-	public String toString() { return getActivatorID() + ", " + getTitle(); }
+	public String toString() { return getId() + ", " + getTitle(); }
 }
