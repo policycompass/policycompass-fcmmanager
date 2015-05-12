@@ -31,6 +31,7 @@ public class FCMModels {
         @SuppressWarnings("unchecked")
         List<FCMModel> model = query.list();
         session.clear();
+        session.close();
 		return model;
 	}	
 
@@ -108,6 +109,9 @@ public class FCMModels {
 	        session.save(connection.get(i));
 		}
         session.getTransaction().commit();
+        session.clear();
+        session.close();
+        
         
         return(retrieveFCMModel(modelID));
 	}	
@@ -312,6 +316,9 @@ public class FCMModels {
 	        session.save(connection.get(i));
 		}
         session.getTransaction().commit();
+        session.clear();
+        session.close();
+        
 
         return(retrieveFCMModel(id));
 //        return(rtnStr);
@@ -345,6 +352,9 @@ public class FCMModels {
 	        session.delete(connection.get(i));
 		}
         session.getTransaction().commit();
+        session.clear();
+        session.close();
+        
 	}
 	
 	public static int getFCMModelID() {
@@ -362,7 +372,9 @@ public class FCMModels {
         } else {
             modelID = (Integer)criteria.uniqueResult();
         }
+        session.clear();
         session.close();
+        
 		return (modelID+1);
 	}
 	
@@ -381,7 +393,9 @@ public class FCMModels {
         } else {
             conceptID = (Integer)criteria.uniqueResult();
         }
+        session.clear();
         session.close();
+        
 		return (conceptID+1);
 	}
 	
@@ -400,7 +414,9 @@ public class FCMModels {
         } else {
             connectionID = (Integer)criteria.uniqueResult();
         }
+        session.clear();
         session.close();
+        
 		return (connectionID+1);
 	}
 	
@@ -668,6 +684,9 @@ public class FCMModels {
 	        session.save(connection[i]);
 		}
         session.getTransaction().commit();
+        session.clear();
+        session.close();
+        
         return model[0];
 	}		
 }
