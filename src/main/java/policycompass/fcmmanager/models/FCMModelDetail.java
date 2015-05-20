@@ -54,6 +54,7 @@ public class FCMModelDetail {
         query.setInteger("id", modelID);
         model = (FCMModel) query.uniqueResult();
         session.clear();
+        session.close();
 
         Session sessionDomain = HibernateUtil.getSessionFactory().openSession();
         sessionDomain.beginTransaction();
@@ -63,6 +64,7 @@ public class FCMModelDetail {
         List<FCMModelInDomain> domain = queryDomain.list();
         domains = domain;
         sessionDomain.clear();
+        sessionDomain.close();
 
         Session sessionConcept = HibernateUtil.getSessionFactory().openSession();
         sessionConcept.beginTransaction();
@@ -72,6 +74,7 @@ public class FCMModelDetail {
         List<FCMConcept> concept = queryConcept.list();
         concepts = concept;
         sessionConcept.clear();
+        sessionConcept.close();
 
         List<Integer> ConceptIDs = new ArrayList<Integer>();
         for (FCMConcept con : concept)
@@ -87,6 +90,7 @@ public class FCMModelDetail {
         List<FCMConnection> connection = queryConnection.list();
         connections = connection;
         sessionConnection.clear();
+        sessionConnection.close();
 	}
 	
 }
