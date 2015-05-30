@@ -5,7 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Id;
 
-public class FCMSimulationConcept {
+public class FCMSimulationResult {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
@@ -14,87 +14,70 @@ public class FCMSimulationConcept {
 	private int FCMSimulation_id;
 	@Column(name = "Concept_id", nullable = false)
 	private int Concept_id;
-	@Column(name = "ScaleValue", nullable = false)
-	private double ScaleValue;
-	@Column(name = "FixedOutput", nullable = false)
-	private boolean FixedOutput;
-	@Column(name = "Metric_id", nullable = false)
-	private int Metric_id;
+	@Column(name = "Iteration_id", nullable = false)
+	private int Iteration_id;
+	@Column(name = "Input", nullable = false)
+	private double Input;
+	@Column(name = "Output", nullable = false)
+	private double Output;
 	@Column(name = "UserID", nullable = false)
 	private int UserID;
 	@Column(name = "DateAddedtoPC", nullable = false)
 	private Date DateAddedtoPC;
 	@Column(name = "DateModified", nullable = true)
 	private Date DateModified;
-
+	
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 	public int getFCMSimulation_id() {
 		return FCMSimulation_id;
 	}
-
 	public void setFCMSimulation_id(int fCMSimulation_id) {
 		FCMSimulation_id = fCMSimulation_id;
 	}
-
 	public int getConceptID() {
 		return Concept_id;
 	}
-
 	public void setConceptID(int conceptID) {
 		Concept_id = conceptID;
 	}
-
-	public double getScaleValue() {
-		return ScaleValue;
+	public int getIteration_id() {
+		return Iteration_id;
 	}
-
-	public void setScaleValue(double scaleValue) {
-		ScaleValue = scaleValue;
+	public void setIteration_id(int iteration_id) {
+		Iteration_id = iteration_id;
 	}
-
-	public boolean getFixedOutput() {
-		return FixedOutput;
+	public double getInput() {
+		return Input;
 	}
-
-	public void setFixedOutput(boolean fixedOutput) {
-		FixedOutput = fixedOutput;
+	public void setInput(double input) {
+		Input = input;
 	}
-
-	public int getMetricID() {
-		return Metric_id;
+	public double getOutput() {
+		return Output;
 	}
-
-	public void setMetricID(int metricID) {
-		Metric_id = metricID;
+	public void setOutput(double output) {
+		Output = output;
 	}
-
 	public int getUserID() {
 		return UserID;
 	}
-
 	public void setUserID(int userID) {
 		UserID = userID;
 	}
-
 	public Date getDateAddedtoPC() {
 		return DateAddedtoPC;
 	}
-
 	public void setDateAddedtoPC(Date dateAddedtoPC) {
 		DateAddedtoPC = dateAddedtoPC;
 	}
-
 	public Date getDateModified() {
 		return DateModified;
 	}
-
 	public void setDateModified(Date dateModified) {
 		DateModified = dateModified;
 	}

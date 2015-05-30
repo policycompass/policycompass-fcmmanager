@@ -6,6 +6,7 @@ import javax.ws.rs.core.*;
 import org.codehaus.jettison.json.JSONObject;
 
 import policycompass.fcmmanager.controllers.*;
+import policycompass.fcmmanager.simulation.pcjfcm;
 
 @Path("/fcmmanager")
 public class FCMModelService {
@@ -82,5 +83,23 @@ public class FCMModelService {
 		rb = Response.ok(FCMConceptActivators.retrieveFCMActivatorList()).build();
 		return rb;
 	}
+
+	@POST 
+    @Path("/simulation")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response runFCMSimulation(JSONObject fcmmodel) {
+        return Response.ok(pcjfcm.runFCMSimulation(fcmmodel)).build();     
+//        return Response.ok(fcmmodel).build();     
+    }
+
+	@POST 
+    @Path("/impactanalysis/{id}")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response runImpactAnaylsis(@PathParam("id") int id, JSONObject fcmmodel) {
+        return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();     
+//        return Response.ok(fcmmodel).build();     
+    }
 
 }
