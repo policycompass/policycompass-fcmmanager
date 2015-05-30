@@ -8,14 +8,12 @@ import javax.persistence.Id;
 public class FCMSimulationConnection {
 
 	@Id
-	@Column(name = "ConnectionID", unique = true, nullable = false)
-	private int ConnectionID;
-	@Column(name = "id", nullable = false)
+	@Column(name = "id", unique = true, nullable = false)
 	private int id;
-	@Column(name = "ConceptFrom", nullable = false)
-	private int ConceptFrom;
-	@Column(name = "ConceptTo", nullable = false)
-	private int ConceptTo;
+	@Column(name = "FCMSimulation_id", nullable = false)
+	private int FCMSimulation_id;
+	@Column(name = "Connection_id", nullable = false)
+	private int Connection_id;
 	@Column(name = "Weighted", nullable = false)
 	private double Weighted;
 	@Column(name = "UserID", nullable = false)
@@ -24,30 +22,23 @@ public class FCMSimulationConnection {
 	private Date DateAddedtoPC;
 	@Column(name = "DateModified", nullable = false)
 	private Date DateModified;
-	@Column(name = "ViewsCount", nullable = false)
-	private int ViewsCount;
-
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public int getFCMSimulation_id() {
+		return FCMSimulation_id;
+	}
+	public void setFCMSimulation_id(int fCMSimulation_id) {
+		FCMSimulation_id = fCMSimulation_id;
+	}
 	public int getConnectionID() {
-		return ConnectionID;
+		return Connection_id;
 	}
 	public void setConnectionID(int connectionID) {
-		ConnectionID = connectionID;
-	}
-
-	public int getId() { return id; }
-	public void setId(int fcmid) { this.id = fcmid; }
-
-	public int getConceptFrom() {
-		return ConceptFrom;
-	}
-	public void setConceptFrom(int conceptFrom) {
-		ConceptFrom = conceptFrom;
-	}
-	public int getConceptTo() {
-		return ConceptTo;
-	}
-	public void setConceptTo(int conceptTo) {
-		ConceptTo = conceptTo;
+		Connection_id = connectionID;
 	}
 	public double getWeighted() {
 		return Weighted;
@@ -72,11 +63,5 @@ public class FCMSimulationConnection {
 	}
 	public void setDateModified(Date dateModified) {
 		DateModified = dateModified;
-	}
-	public int getViewsCount() {
-		return ViewsCount;
-	}
-	public void setViewsCount(int viewsCount) {
-		ViewsCount = viewsCount;
 	}
 }

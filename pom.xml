@@ -155,6 +155,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <version>${hibernate.version}</version>
     </dependency>
 
+    <!-- JFCM -->
+    <dependency>
+      <groupId>org.megadix.jfcm</groupId>
+      <artifactId>jfcm-core</artifactId>
+      <version>1.4.1</version>
+    </dependency>
+
   </dependencies>
   
 </project>
