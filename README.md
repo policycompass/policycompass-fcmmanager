@@ -80,7 +80,7 @@ Create a postgres user and a database
 * Create WAR file 
 ```shell
   mvn clean
-  mvn install:install-file -DgroupId=org.megadix.jfcm -DartifactId=jfcm-core -Dversion=1.4.1 -Dpackaging=jar -Dfile=/PATH TO FILE/jfcm-core-1.4.1.jar
+  mvn install:install-file -DgroupId=org.megadix.jfcm -DartifactId=jfcm-core -Dversion=1.4.1 -Dpackaging=jar -Dfile=/PATH TO JAR/jfcm-core-1.4.1.jar
   mvn install
 ```
 ### Load sample data
