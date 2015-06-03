@@ -77,6 +77,10 @@ Create a postgres user and a database
   cp src/main/resources/hibernate.cfg.template.xml src/main/resources/hibernate.cfg.xml
   gedit src/main/resources/hibernate.cfg.xml
 ```
+* Download Java Fuzzy Cognitive Maps Library 
+```shell
+  http://jfcm.megadix.it/book/documentation/getting-started/download-and-installation
+```
 * Create WAR file 
 ```shell
   mvn clean
