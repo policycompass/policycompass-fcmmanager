@@ -9,6 +9,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.megadix.jfcm.CognitiveMap;
@@ -45,6 +46,8 @@ c11 - national prohibition and prosecution
 
 public class pcjfcm {
 	
+	static int NumberIterations=20;
+	
 	public static FCMSimulationDetail runFCMSimulation(JSONObject jsonModel)
 	{
 		FCMModel model = new FCMModel();
@@ -73,9 +76,23 @@ public class pcjfcm {
 			model.setDescription(jsonModel.getJSONObject("data").getJSONObject("model").get("description").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").getJSONObject("model").get("keywords").toString());
 			
+	        Session session = HibernateUtil.getSessionFactory().openSession();
+	         
+	        session.beginTransaction();
+	        Query qConcept = session.createQuery("from fcmmanager_concepts where FCMModel_id= :id");
+	        qConcept.setInteger("id", modelID);
+	        @SuppressWarnings("unchecked")
+	        List<FCMConcept> conceptdb = qConcept.list();
+	        
+	        Query qConnection = session.createQuery("from fcmmanager_connections where FCMModel_id= :id");
+	        qConnection.setInteger("id", modelID);
+	        @SuppressWarnings("unchecked")
+	        List<FCMConnection> connectiondb = qConnection.list();
+
 			map = new CognitiveMap(model.getTitle());
 
 			JSONArray concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
+			System.out.println(concepts.length());
 			for(int i=0;i<concepts.length();i++){
 				FCMSimulationConcept sCon = new FCMSimulationConcept();
 				FCMConcept Con = new FCMConcept();
@@ -97,17 +114,29 @@ public class pcjfcm {
 				Con.setTitle(ob.getString("title").toString());
 				Con.setScale(Integer.parseInt(ob.getString("scale").toString()));
 				concept.add(Con);
+
+		    	for (int j=0;j<conceptdb.size();j++)
+		    	{
+    				if (conceptdb.get(j).getId()==Integer.parseInt(ob.getString("Id").toString()))
+    				{
+						conceptdb.get(j).setValue(Double.parseDouble(ob.getString("value")));
+			        	session.update(conceptdb.get(j));
+    				}
+		    	}
+		    	
 				conceptSimulationID = conceptSimulationID+1;
 			}			
 
 			c = new Concept[simulationConcept.size()];
 			
+			System.out.println(simulationConcept.size());
 			for (int i=0;i<simulationConcept.size();i++)
 			{
 //				System.out.println("c"+simulationConcept.get(i).getConceptID()+"\t"+concept.get(i).getTitle()+"\t"+simulationConcept.get(i).getScaleValue()+"\t"+simulationConcept.get(i).getFixedOutput());
 				Concept cc = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), af, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
 				c[i]=cc;
 				map.addConcept(c[i]);
+				System.out.println("c"+simulationConcept.get(i).getConceptID());
 			}
 			
 //			for (int i=0;i<c.length;i++)
@@ -136,6 +165,15 @@ public class pcjfcm {
 				con.setConceptTo(Integer.parseInt(ob.getString("destinationID").toString()));
 				connection.add(con);
 
+		    	for (int j=0;j<connectiondb.size();j++)
+		    	{
+    				if (connectiondb.get(j).getId()==Integer.parseInt(ob.getString("Id").toString()))
+    				{
+    					connectiondb.get(j).setWeight(ob.getString("weighted"));;
+    		        	session.update(connectiondb.get(j));
+    				}
+		    	}
+		    	
 				connectionSimulationID=connectionSimulationID+1;
 				
 				FcmConnection conn = new WeightedConnection("c"+con.getConceptFrom()+" -> "+"c"+con.getConceptTo(), ob.getJSONObject("source").getString("title")+" -> "+ob.getJSONObject("destination").getString("title"), sCon.getWeighted());	
@@ -143,9 +181,13 @@ public class pcjfcm {
 				map.connect("c"+con.getConceptFrom(), "c"+con.getConceptFrom()+" -> "+"c"+con.getConceptTo(), "c"+con.getConceptTo());
 			}			
 
-			DecimalFormat df2 = new DecimalFormat("#.##");
+	        session.getTransaction().commit();
+	        session.clear();
+	        session.close();
+
+	        DecimalFormat df2 = new DecimalFormat("#.###");
 			
-			for(int i=0;i<50;i++)
+			for(int i=0;i<NumberIterations;i++)
 			{
 				for (int j=0;j<simulationConcept.size();j++)
 				{
@@ -159,8 +201,8 @@ public class pcjfcm {
 					if (c[j].getOutput()==null)
 						res.setOutput(0.0);
 					else
+//						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
 						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
-//						res.setOutput(c[j].getOutput());
 //					System.out.println((j+1)+"\t"+c[j].getName()+"\t"+c[j].getDescription()+"\t"+c[j].getOutput());
 					simulationResults.add(res);
 				}
@@ -273,7 +315,7 @@ public class pcjfcm {
 			}			
 
 			DecimalFormat df1 = new DecimalFormat("#.#");
-			DecimalFormat df2 = new DecimalFormat("#.##");
+			DecimalFormat df2 = new DecimalFormat("#.###");
 
 			for (int x=0;x<listSimulationConcept.size();x++)
 			{
@@ -304,7 +346,7 @@ public class pcjfcm {
 					map.connect("c"+connection.get(i).getConceptFrom(), "c"+connection.get(i).getConceptFrom()+" -> "+"c"+connection.get(i).getConceptTo(), "c"+connection.get(i).getConceptTo());
 				}
 	
-				for(int i=0;i<50;i++)
+				for(int i=0;i<NumberIterations;i++)
 					map.execute();
 	
 				for (int j=0;j<simulationConcept.size();j++)
