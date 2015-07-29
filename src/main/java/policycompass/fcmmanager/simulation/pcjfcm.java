@@ -66,8 +66,32 @@ public class pcjfcm {
 		Date date1=new Date();
         
 		CognitiveMap map;
-		SigmoidActivator af = new SigmoidActivator();
-		af.setIncludePreviousOutput(false);
+
+		SigmoidActivator afSigmoidActivator = new SigmoidActivator();
+		afSigmoidActivator.setIncludePreviousOutput(false);
+
+		CauchyActivator afCauchyActivator = new CauchyActivator();
+		afCauchyActivator.setIncludePreviousOutput(false);
+
+		GaussianActivator afGaussianActivator = new GaussianActivator();
+		afGaussianActivator.setIncludePreviousOutput(false);
+
+		HyperbolicTangentActivator afHyperbolicTangentActivator = new HyperbolicTangentActivator();
+		afHyperbolicTangentActivator.setIncludePreviousOutput(false);
+
+		IntervalActivator afIntervalActivator = new IntervalActivator();
+		afIntervalActivator.setIncludePreviousOutput(false);
+
+		LinearActivator afLinearActivator = new LinearActivator();
+		afLinearActivator.setIncludePreviousOutput(false);
+
+		NaryActivator afNaryActivator = new NaryActivator();
+		afNaryActivator.setIncludePreviousOutput(false);
+
+		SignumActivator afSignumActivator = new SignumActivator();
+		afSignumActivator.setIncludePreviousOutput(false);
+		
+		int activatorID;
 
 		try {
 	    	modelID=Integer.parseInt(jsonModel.getJSONObject("data").getJSONObject("model").get("ModelID").toString());
@@ -75,6 +99,10 @@ public class pcjfcm {
 			model.setTitle(jsonModel.getJSONObject("data").getJSONObject("model").get("title").toString());
 			model.setDescription(jsonModel.getJSONObject("data").getJSONObject("model").get("description").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").getJSONObject("model").get("keywords").toString());
+			
+			activatorID = Integer.parseInt(jsonModel.getJSONObject("data").get("activatorId").toString());
+			
+			System.out.println(activatorID);
 			
 	        Session session = HibernateUtil.getSessionFactory().openSession();
 	         
@@ -133,8 +161,49 @@ public class pcjfcm {
 			for (int i=0;i<simulationConcept.size();i++)
 			{
 //				System.out.println("c"+simulationConcept.get(i).getConceptID()+"\t"+concept.get(i).getTitle()+"\t"+simulationConcept.get(i).getScaleValue()+"\t"+simulationConcept.get(i).getFixedOutput());
-				Concept cc = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), af, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
-				c[i]=cc;
+				switch (activatorID)
+				{
+					case 1:
+						Concept cc1 = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), afCauchyActivator, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
+						c[i]=cc1;
+						break;
+				
+					case 2:
+						Concept cc2 = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), afGaussianActivator, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
+						c[i]=cc2;
+						break;
+				
+					case 3:
+						Concept cc3 = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), afHyperbolicTangentActivator, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
+						c[i]=cc3;
+						break;
+				
+					case 4:
+						Concept cc4 = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), afIntervalActivator, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
+						c[i]=cc4;
+						break;
+				
+					case 5:
+						Concept cc5 = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), afLinearActivator, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
+						c[i]=cc5;
+						break;
+				
+					case 6:
+						Concept cc6 = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), afNaryActivator, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
+						c[i]=cc6;
+						break;
+				
+					case 7:
+						Concept cc7 = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), afSigmoidActivator, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
+						c[i]=cc7;
+						break;
+				
+					case 8:
+						Concept cc8 = new Concept("c"+simulationConcept.get(i).getConceptID(), concept.get(i).getTitle(), afSignumActivator, 0.0, simulationConcept.get(i).getScaleValue(), simulationConcept.get(i).getFixedOutput());
+						c[i]=cc8;
+				
+				}
+
 				map.addConcept(c[i]);
 				System.out.println("c"+simulationConcept.get(i).getConceptID());
 			}
