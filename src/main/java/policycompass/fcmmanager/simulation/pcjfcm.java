@@ -131,7 +131,6 @@ public class pcjfcm {
 				sCon.setConceptID(Integer.parseInt(ob.getString("Id").toString()));
 				sCon.setScaleValue(Double.parseDouble(ob.getString("value")));
 				sCon.setFixedOutput(ob.getBoolean("fixedoutput"));
-//				sCon.setMetricID(ob.getInt("x"));
 				sCon.setDateAddedtoPC(date1);
 				sCon.setDateModified(date1);
 				sCon.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
@@ -148,6 +147,7 @@ public class pcjfcm {
     				if (conceptdb.get(j).getId()==Integer.parseInt(ob.getString("Id").toString()))
     				{
 						conceptdb.get(j).setValue(Double.parseDouble(ob.getString("value")));
+						conceptdb.get(j).setMetric_id(ob.getInt("metricId"));
 			        	session.update(conceptdb.get(j));
     				}
 		    	}

@@ -61,14 +61,9 @@ public class FCMModels {
 			for(int i=0;i<concepts.length();i++){
 				FCMConcept con = new FCMConcept();
 				JSONObject ob= concepts.getJSONObject(i);
-				String ConID = ob.getString("Id");
-				
-				if (ConID.substring(0,1).compareTo("n")==0)
-					con.setId(conceptID+Integer.parseInt(ConID.substring(1,ConID.length())));
-				else
-					con.setId(conceptID+Integer.parseInt(ConID));
 				
 				con.setFCMModelID(modelID);
+				con.setId(conceptID+Integer.parseInt(ob.getString("Id").substring(1)));
 				con.setTitle(ob.getString("title"));
 				con.setDescription(ob.getString("description"));
 				con.setScale(ob.getInt("scale"));
@@ -82,43 +77,14 @@ public class FCMModels {
 			}			
 
 			JSONArray connections = jsonModel.getJSONObject("data").getJSONArray("connections");
-			String SourceID;
-			String DestinationID;
-
 			for(int i=0;i<connections.length();i++){
 				FCMConnection con = new FCMConnection();
 				JSONObject ob= connections.getJSONObject(i);
 				
 				con.setFCMModelID(modelID);
-				String AssID = ob.getString("Id");
-				if (AssID.substring(0,1).compareTo("e")==0)
-					con.setId(connectionID+Integer.parseInt(AssID.substring(1,AssID.length())));
-				else
-					con.setId(connectionID+Integer.parseInt(AssID));
-				
-				SourceID=ob.getString("sourceID");
-				DestinationID=ob.getString("destinationID");
-
-				if (SourceID.substring(0,1).compareTo("n")==0)
-				{
-					con.setConceptFrom(conceptID+Integer.parseInt(SourceID.substring(1,SourceID.length())));
-				}
-				else
-				{
-					con.setConceptFrom(conceptID+Integer.parseInt(SourceID));
-				}
-				if (DestinationID.substring(0,1).compareTo("n")==0)
-				{
-					con.setConceptTo(conceptID+Integer.parseInt(DestinationID.substring(1,DestinationID.length())));
-				}
-				else
-				{
-					con.setConceptTo(conceptID+Integer.parseInt(DestinationID));
-				}
-
-//				con.setConceptFrom(conceptID+Integer.parseInt(ob.getJSONObject("source").getString("Id").substring(1)));
-//				con.setConceptTo(conceptID+Integer.parseInt(ob.getJSONObject("destination").getString("Id").substring(1)));
-				con.setWeight("?");
+				con.setId(connectionID+Integer.parseInt(ob.getString("Id").substring(1)));
+				con.setConceptFrom(conceptID+Integer.parseInt(ob.getJSONObject("source").getString("Id").substring(1)));
+				con.setConceptTo(conceptID+Integer.parseInt(ob.getJSONObject("destination").getString("Id").substring(1)));
 				con.setDateAddedtoPC(date1);
 				con.setDateModified(date1);
 				con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
@@ -215,7 +181,6 @@ public class FCMModels {
 					{
 						con.setConceptTo(Integer.parseInt(DestinationID));
 					}
-					con.setWeight("?");
 					con.setDateAddedtoPC(date1);
 					con.setDateModified(date1);
 					con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
@@ -693,7 +658,6 @@ public class FCMModels {
 				connection[i].setFCMModelID(modelID+1);
 			}
 			connection[i].setId(connectionID+i);
-			connection[i].setWeight("?");
 			connection[i].setUserID(1);
 			connection[i].setDateAddedtoPC(date1);
 			connection[i].setDateModified(date1);

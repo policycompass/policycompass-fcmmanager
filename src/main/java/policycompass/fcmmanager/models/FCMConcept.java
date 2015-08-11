@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "FCM Concepts")
-@XmlType(propOrder = { "id", "FCMModel_id", "Title", "Description", "Scale", "Value", "Metric_id", "UserID", "DateAddedtoPC", "DateModified", "ViewsCount" })
+@XmlType(propOrder = { "id", "FCMModel_id", "Title", "Description", "Scale", "UserID", "DateAddedtoPC", "DateModified", "ViewsCount" })
 
 @Entity (name="fcmmanager_concepts")
 public class FCMConcept {
@@ -25,10 +25,6 @@ public class FCMConcept {
 	private String Description;
 	@Column(name = "Scale", nullable = false)
 	private int Scale;
-	@Column(name = "Value", nullable = true)
-	private double Value;
-	@Column(name = "Metric_id", nullable = true)
-	private int Metric_id;
 	@Column(name = "PositionX", nullable = false)
 	private int PositionX;
 	@Column(name = "PositionY", nullable = false)
@@ -56,12 +52,6 @@ public class FCMConcept {
 
 	public int getScale() { return Scale; }
 	public void setScale(int scale) { this.Scale = scale; }
-
-	public double getValue() {	return Value; }
-	public void setValue(double value) { Value = value; }
-
-	public int getMetric_id() {	return Metric_id; }
-	public void setMetric_id(int metric_id) { Metric_id = metric_id; }
 
 	public int getPositionX() { return PositionX; }
 	public void setPositionX(int positionX) { PositionX = positionX; }
