@@ -58,6 +58,7 @@ public class pcjfcm {
 
 		List<FCMSimulationResult> simulationResults = new ArrayList<FCMSimulationResult>();
 		Concept[] c;
+		double conceptOutput;
 
 		int modelID;
         int conceptSimulationID = getConceptID();
@@ -270,8 +271,20 @@ public class pcjfcm {
 					if (c[j].getOutput()==null)
 						res.setOutput(0.0);
 					else
+					{
+						conceptOutput = Double.parseDouble(df2.format(c[j].getOutput()));
+						if (conceptOutput<=0.2)
+							res.setOutput(0.2);
+						else if (conceptOutput<=0.4)
+							res.setOutput(0.4);
+						else if (conceptOutput<=0.6)
+							res.setOutput(0.6);
+						else if (conceptOutput<=0.8)
+							res.setOutput(0.8);
+						else if (conceptOutput<=1.0)
+							res.setOutput(1.0);
 //						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
-						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
+					}
 //					System.out.println((j+1)+"\t"+c[j].getName()+"\t"+c[j].getDescription()+"\t"+c[j].getOutput());
 					simulationResults.add(res);
 				}
@@ -299,6 +312,7 @@ public class pcjfcm {
 		List<FCMSimulationConnection> simulationConnection = new ArrayList<FCMSimulationConnection>();
 
 		List<FCMSimulationResult> simulationResults = new ArrayList<FCMSimulationResult>();
+		double conceptOutput;
 
 		int modelID;
         int conceptSimulationID = getConceptID();
@@ -429,7 +443,20 @@ public class pcjfcm {
 					if (c[j].getOutput()==null)
 						res.setOutput(0.0);
 					else
-						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
+					{
+						conceptOutput = Double.parseDouble(df2.format(c[j].getOutput()));
+						if (conceptOutput<=0.2)
+							res.setOutput(0.2);
+						else if (conceptOutput<=0.4)
+							res.setOutput(0.4);
+						else if (conceptOutput<=0.6)
+							res.setOutput(0.6);
+						else if (conceptOutput<=0.8)
+							res.setOutput(0.8);
+						else if (conceptOutput<=1.0)
+							res.setOutput(1.0);
+//						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
+					}
 				
 					simulationResults.add(res);
 				}
