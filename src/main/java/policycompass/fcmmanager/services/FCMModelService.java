@@ -76,6 +76,15 @@ public class FCMModelService {
 	}
 
 	@GET
+	@Path("/metrics/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response retrieveFCMModelsByMetrics(@PathParam("id") int id) throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMModels.retrieveFCMModelsListByMetrics(id)).build();
+		return rb;
+	}
+
+	@GET
 	@Path("/activators")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response retrieveAllActivators() throws Exception {
