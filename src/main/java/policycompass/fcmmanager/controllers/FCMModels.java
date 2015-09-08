@@ -725,6 +725,36 @@ public class FCMModels {
         
         return model[0];
 	}		
+
+	public static List<FCMModel> retrieveFCMModelsListByMetrics(int id) 
+	{
+		List<Integer> ModelId = new ArrayList<Integer>();
+		
+        Session sessionConcept = HibernateUtil.getSessionFactory().openSession();
+        sessionConcept.beginTransaction();
+        Query qConcept = sessionConcept.createQuery("from fcmmanager_concepts where metric_id= :id");
+        qConcept.setInteger("id", id);
+        @SuppressWarnings("unchecked")
+        List<FCMConcept> concept = qConcept.list();
+        sessionConcept.clear();
+        sessionConcept.close();
+        
+        for (int i=0;i<concept.size();i++)
+        {
+        	ModelId.add(concept.get(i).getFCMModelID());
+        }
+        
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        Query query = session.createQuery("from fcmmanager_models where id in ( :mId)");
+        query.setParameterList("mId", ModelId);
+        @SuppressWarnings("unchecked")
+        List<FCMModel> model = query.list();
+        session.clear();
+        session.close();
+		return model;
+	}	
+
 }
 
 
