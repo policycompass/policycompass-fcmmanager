@@ -76,6 +76,33 @@ public class FCMModelService {
 	}
 
 	@GET
+	@Path("/metrics/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response retrieveFCMModelsByMetrics(@PathParam("id") int id) throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMModels.retrieveFCMModelsListByMetrics(id)).build();
+		return rb;
+	}
+
+	@GET
+	@Path("/datasets/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response retrieveFCMModelsByDatasets(@PathParam("id") int id) throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMModels.retrieveFCMModelsListByDatasets(id)).build();
+		return rb;
+	}
+
+	@GET
+	@Path("/individuals/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response retrieveFCMModelsByIndividuals(@PathParam("id") int id) throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMModels.retrieveFCMModelsListByIndividuals(id)).build();
+		return rb;
+	}
+
+	@GET
 	@Path("/activators")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response retrieveAllActivators() throws Exception {

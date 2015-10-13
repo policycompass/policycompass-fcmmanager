@@ -21,6 +21,7 @@ import org.megadix.jfcm.conn.*;
 
 import policycompass.fcmmanager.hibernate.HibernateUtil;
 import policycompass.fcmmanager.models.FCMConcept;
+import policycompass.fcmmanager.models.FCMConceptIndividual;
 import policycompass.fcmmanager.models.FCMConnection;
 import policycompass.fcmmanager.models.FCMModel;
 import policycompass.fcmmanager.models.FCMSimulationConcept;
@@ -55,13 +56,16 @@ public class pcjfcm {
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
 		List<FCMSimulationConnection> simulationConnection = new ArrayList<FCMSimulationConnection>();
+		List<FCMConceptIndividual> conceptIndividual = new ArrayList<FCMConceptIndividual>();
 
 		List<FCMSimulationResult> simulationResults = new ArrayList<FCMSimulationResult>();
 		Concept[] c;
+		double conceptOutput;
 
 		int modelID;
         int conceptSimulationID = getConceptID();
         int connectionSimulationID = getConnectionID();
+        int conceptIndividualID = getConceptIndividualID();
 	
 		Date date1=new Date();
         
@@ -131,7 +135,6 @@ public class pcjfcm {
 				sCon.setConceptID(Integer.parseInt(ob.getString("Id").toString()));
 				sCon.setScaleValue(Double.parseDouble(ob.getString("value")));
 				sCon.setFixedOutput(ob.getBoolean("fixedoutput"));
-//				sCon.setMetricID(ob.getInt("x"));
 				sCon.setDateAddedtoPC(date1);
 				sCon.setDateModified(date1);
 				sCon.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
@@ -147,8 +150,33 @@ public class pcjfcm {
 		    	{
     				if (conceptdb.get(j).getId()==Integer.parseInt(ob.getString("Id").toString()))
     				{
-						conceptdb.get(j).setValue(Double.parseDouble(ob.getString("value")));
+    			        Query qConceptIndividuals = session.createQuery("from fcmmanager_conceptindividuals where Concept_id= :id");
+    			        qConceptIndividuals.setInteger("id", conceptdb.get(j).getId());
+    			        @SuppressWarnings("unchecked")
+    			        List<FCMConceptIndividual> conceptIndividuals = qConceptIndividuals.list();
+    					for (int k=0;k<conceptIndividuals.size();k++)
+    					{
+    				        session.delete(conceptIndividuals.get(k));
+    					}
+
+    					conceptdb.get(j).setValue(Double.parseDouble(ob.getString("value")));
+						conceptdb.get(j).setMetric_id(ob.getInt("metricId"));
+
+    					for (int k=0;k<ob.getJSONArray("individuals").length();k++)
+    					{
+    						FCMConceptIndividual conInd = new FCMConceptIndividual();
+    						conInd.setId(conceptIndividualID);
+    						conInd.setConceptID(conceptdb.get(j).getId());
+    						conInd.setIndividualID(ob.getJSONArray("individuals").getInt(k));
+    						conceptIndividual.add(conInd);
+    						conceptIndividualID = conceptIndividualID+1;
+    					}
 			        	session.update(conceptdb.get(j));
+    				}
+
+    				for (int k=0;k<conceptIndividual.size();k++)
+    				{
+    			        session.save(conceptIndividual.get(k));
     				}
 		    	}
 		    	
@@ -270,8 +298,20 @@ public class pcjfcm {
 					if (c[j].getOutput()==null)
 						res.setOutput(0.0);
 					else
+					{
+						conceptOutput = Double.parseDouble(df2.format(c[j].getOutput()));
+						if (conceptOutput<=0.2)
+							res.setOutput(0.2);
+						else if (conceptOutput<=0.4)
+							res.setOutput(0.4);
+						else if (conceptOutput<=0.6)
+							res.setOutput(0.6);
+						else if (conceptOutput<=0.8)
+							res.setOutput(0.8);
+						else if (conceptOutput<=1.0)
+							res.setOutput(1.0);
 //						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
-						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
+					}
 //					System.out.println((j+1)+"\t"+c[j].getName()+"\t"+c[j].getDescription()+"\t"+c[j].getOutput());
 					simulationResults.add(res);
 				}
@@ -299,6 +339,7 @@ public class pcjfcm {
 		List<FCMSimulationConnection> simulationConnection = new ArrayList<FCMSimulationConnection>();
 
 		List<FCMSimulationResult> simulationResults = new ArrayList<FCMSimulationResult>();
+		double conceptOutput;
 
 		int modelID;
         int conceptSimulationID = getConceptID();
@@ -429,7 +470,20 @@ public class pcjfcm {
 					if (c[j].getOutput()==null)
 						res.setOutput(0.0);
 					else
-						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
+					{
+						conceptOutput = Double.parseDouble(df2.format(c[j].getOutput()));
+						if (conceptOutput<=0.2)
+							res.setOutput(0.2);
+						else if (conceptOutput<=0.4)
+							res.setOutput(0.4);
+						else if (conceptOutput<=0.6)
+							res.setOutput(0.6);
+						else if (conceptOutput<=0.8)
+							res.setOutput(0.8);
+						else if (conceptOutput<=1.0)
+							res.setOutput(1.0);
+//						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
+					}
 				
 					simulationResults.add(res);
 				}
@@ -539,6 +593,27 @@ public class pcjfcm {
         session.close();
         
 		return (connectionID+1);
+	}
+	
+	public static int getConceptIndividualID() {
+		int ConceptIndividualID=0;
+		
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        session.beginTransaction();
+        Criteria criteria = session
+	    .createCriteria(FCMConceptIndividual.class)
+	    .setProjection(Projections.max("id"));
+        if (criteria.uniqueResult()==null)
+        {
+        	ConceptIndividualID=0;
+        } else {
+        	ConceptIndividualID = (Integer)criteria.uniqueResult();
+        }
+        session.clear();
+        session.close();
+        
+		return (ConceptIndividualID+1);
 	}
 	
 }
