@@ -729,6 +729,7 @@ public class FCMModels {
 	public static List<FCMModel> retrieveFCMModelsListByMetrics(int id) 
 	{
 		List<Integer> ModelId = new ArrayList<Integer>();
+		List<FCMModel> model = new ArrayList<FCMModel>();
 		
         Session sessionConcept = HibernateUtil.getSessionFactory().openSession();
         sessionConcept.beginTransaction();
@@ -744,15 +745,105 @@ public class FCMModels {
         	ModelId.add(concept.get(i).getFCMModelID());
         }
         
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query = session.createQuery("from fcmmanager_models where id in ( :mId)");
-        query.setParameterList("mId", ModelId);
+        if (concept.size()>0)
+        {
+	        Session session = HibernateUtil.getSessionFactory().openSession();
+	        session.beginTransaction();
+	        Query query = session.createQuery("from fcmmanager_models where id in ( :mId)");
+	        query.setParameterList("mId", ModelId);
+        	@SuppressWarnings("unchecked")
+        	List<FCMModel> models = query.list();
+            session.clear();
+            session.close();
+    		return models;
+	    } else {
+			return model;
+		}
+	}	
+
+	public static List<FCMModel> retrieveFCMModelsListByDatasets(int id) 
+	{
+		List<Integer> ModelId = new ArrayList<Integer>();
+		List<FCMModel> model = new ArrayList<FCMModel>();
+		
+        Session sessionConcept = HibernateUtil.getSessionFactory().openSession();
+        sessionConcept.beginTransaction();
+        Query qConcept = sessionConcept.createQuery("from fcmmanager_concepts where metric_id= :id");
+        qConcept.setInteger("id", id);
         @SuppressWarnings("unchecked")
-        List<FCMModel> model = query.list();
-        session.clear();
-        session.close();
-		return model;
+        List<FCMConcept> concept = qConcept.list();
+        sessionConcept.clear();
+        sessionConcept.close();
+        
+        for (int i=0;i<concept.size();i++)
+        {
+        	ModelId.add(concept.get(i).getFCMModelID());
+        }
+        
+        if (concept.size()>0)
+        {
+	        Session session = HibernateUtil.getSessionFactory().openSession();
+	        session.beginTransaction();
+	        Query query = session.createQuery("from fcmmanager_models where id in ( :mId)");
+	        query.setParameterList("mId", ModelId);
+        	@SuppressWarnings("unchecked")
+        	List<FCMModel> models = query.list();
+            session.clear();
+            session.close();
+    		return models;
+	    } else {
+			return model;
+		}
+	}	
+
+	public static List<FCMModel> retrieveFCMModelsListByIndividuals(int id) 
+	{
+		List<Integer> ModelId = new ArrayList<Integer>();
+		List<Integer> ConceptId = new ArrayList<Integer>();
+		List<FCMModel> model = new ArrayList<FCMModel>();
+		
+        Session sessionConceptIndividuals = HibernateUtil.getSessionFactory().openSession();
+        sessionConceptIndividuals.beginTransaction();
+        Query qConceptIndividuals = sessionConceptIndividuals.createQuery("from fcmmanager_conceptindividuals where Individual_id= :id");
+        qConceptIndividuals.setInteger("id", id);
+        @SuppressWarnings("unchecked")
+        List<FCMConceptIndividual> conceptIndividuals = qConceptIndividuals.list();
+        sessionConceptIndividuals.clear();
+        sessionConceptIndividuals.close();
+        
+        for (int i=0;i<conceptIndividuals.size();i++)
+        {
+        	ConceptId.add(conceptIndividuals.get(i).getConceptID());
+        }
+        
+        if (conceptIndividuals.size()>0)
+        {
+        	Session sessionConcept = HibernateUtil.getSessionFactory().openSession();
+	        sessionConcept.beginTransaction();
+	        Query qConcept = sessionConcept.createQuery("from fcmmanager_concepts where id in ( :id)");
+	        qConcept.setParameterList("id", ConceptId);
+	        @SuppressWarnings("unchecked")
+	        List<FCMConcept> concept = qConcept.list();
+	        sessionConcept.clear();
+	        sessionConcept.close();
+	        
+	        for (int i=0;i<concept.size();i++)
+	        {
+	        	ModelId.add(concept.get(i).getFCMModelID());
+	        }
+	        
+	        Session session = HibernateUtil.getSessionFactory().openSession();
+	        session.beginTransaction();
+	        Query query = session.createQuery("from fcmmanager_models where id in ( :mId)");
+	        query.setParameterList("mId", ModelId);
+	        @SuppressWarnings("unchecked")
+	        List<FCMModel> models = query.list();
+	        session.clear();
+	        session.close();
+			return models;
+	    } else {
+			return model;
+		}
 	}	
 
 }
