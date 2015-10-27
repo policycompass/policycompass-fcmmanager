@@ -118,7 +118,7 @@ public class FCMModels {
 
 //				con.setConceptFrom(conceptID+Integer.parseInt(ob.getJSONObject("source").getString("Id").substring(1)));
 //				con.setConceptTo(conceptID+Integer.parseInt(ob.getJSONObject("destination").getString("Id").substring(1)));
-				con.setWeight("?");
+				con.setWeight(ob.getString("weight"));
 				con.setDateAddedtoPC(date1);
 				con.setDateModified(date1);
 				con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
@@ -215,7 +215,7 @@ public class FCMModels {
 					{
 						con.setConceptTo(Integer.parseInt(DestinationID));
 					}
-					con.setWeight("?");
+					con.setWeight(ob.getString("weight"));
 					con.setDateAddedtoPC(date1);
 					con.setDateModified(date1);
 					con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
@@ -321,6 +321,7 @@ public class FCMModels {
 	    					{
 	    						connectiondb.get(i).setConceptTo(Integer.parseInt(DestinationID));
 	    					}
+	    					connectiondb.get(i).setWeight(ob.getString("weighted"));
 	    					connectiondb.get(i).setDateModified(date1);
 	    					connectiondb.get(i).setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 	    					Found=true;

@@ -14,6 +14,7 @@ public class FCMModelDetail {
 	List<FCMModelInDomain> domains;
 	List<FCMConcept> concepts;
 	List<FCMConnection> connections;
+	List<FCMConceptIndividual> conceptindividuals;
 	
 	public FCMModel getModel() {
 		return model;
@@ -45,6 +46,14 @@ public class FCMModelDetail {
 
 	public void setConnections(List<FCMConnection> connections) {
 		this.connections = connections;
+	}
+
+	public List<FCMConceptIndividual> getConceptindividuals() {
+		return conceptindividuals;
+	}
+
+	public void setConceptindividuals(List<FCMConceptIndividual> conceptindividuals) {
+		this.conceptindividuals = conceptindividuals;
 	}
 
 	public FCMModelDetail(int modelID) {
@@ -81,6 +90,16 @@ public class FCMModelDetail {
         {
         	ConceptIDs.add(con.getId());
         }
+
+        Session sessionConceptIndividual = HibernateUtil.getSessionFactory().openSession();
+        sessionConceptIndividual.beginTransaction();
+        Query queryConceptIndividual = sessionConceptIndividual.createQuery("from fcmmanager_conceptindividuals where concept_id in ( :mId)");
+        queryConceptIndividual.setParameterList("mId", ConceptIDs);
+        @SuppressWarnings("unchecked")
+        List<FCMConceptIndividual> conceptIndividual = queryConceptIndividual.list();
+        conceptindividuals = conceptIndividual;
+        sessionConceptIndividual.clear();
+        sessionConceptIndividual.close();
 
         Session sessionConnection = HibernateUtil.getSessionFactory().openSession();
         sessionConnection.beginTransaction();
