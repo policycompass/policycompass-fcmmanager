@@ -425,7 +425,7 @@ public class pcjfcm {
 			}			
 
 			DecimalFormat df1 = new DecimalFormat("#.#");
-			DecimalFormat df2 = new DecimalFormat("#.###");
+			DecimalFormat df2 = new DecimalFormat("#.##");
 
 			for (int x=0;x<listSimulationConcept.size();x++)
 			{
@@ -472,17 +472,17 @@ public class pcjfcm {
 					else
 					{
 						conceptOutput = Double.parseDouble(df2.format(c[j].getOutput()));
-						if (conceptOutput<=0.2)
-							res.setOutput(0.2);
-						else if (conceptOutput<=0.4)
-							res.setOutput(0.4);
-						else if (conceptOutput<=0.6)
-							res.setOutput(0.6);
-						else if (conceptOutput<=0.8)
-							res.setOutput(0.8);
-						else if (conceptOutput<=1.0)
-							res.setOutput(1.0);
-//						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
+//						if (conceptOutput<=0.2)
+//							res.setOutput(0.2);
+//						else if (conceptOutput<=0.4)
+//							res.setOutput(0.4);
+//						else if (conceptOutput<=0.6)
+//							res.setOutput(0.6);
+//						else if (conceptOutput<=0.8)
+//							res.setOutput(0.8);
+//						else if (conceptOutput<=1.0)
+//							res.setOutput(1.0);
+						res.setOutput(Double.parseDouble(df2.format(c[j].getOutput())));
 					}
 				
 					simulationResults.add(res);
