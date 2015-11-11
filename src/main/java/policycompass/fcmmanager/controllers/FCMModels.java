@@ -102,10 +102,12 @@ public class FCMModels {
 				if (SourceID.substring(0,1).compareTo("n")==0)
 				{
 					con.setConceptFrom(conceptID+Integer.parseInt(SourceID.substring(1,SourceID.length())));
+					con.setWeight(ob.getString("weight"));
 				}
 				else
 				{
 					con.setConceptFrom(conceptID+Integer.parseInt(SourceID));
+					con.setWeight(ob.getString("weighted"));
 				}
 				if (DestinationID.substring(0,1).compareTo("n")==0)
 				{
@@ -118,7 +120,6 @@ public class FCMModels {
 
 //				con.setConceptFrom(conceptID+Integer.parseInt(ob.getJSONObject("source").getString("Id").substring(1)));
 //				con.setConceptTo(conceptID+Integer.parseInt(ob.getJSONObject("destination").getString("Id").substring(1)));
-				con.setWeight(ob.getString("weighted"));
 				con.setDateAddedtoPC(date1);
 				con.setDateModified(date1);
 				con.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
