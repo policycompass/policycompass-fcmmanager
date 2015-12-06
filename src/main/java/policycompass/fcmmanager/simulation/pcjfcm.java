@@ -233,7 +233,7 @@ public class pcjfcm {
 				}
 
 				map.addConcept(c[i]);
-				System.out.println("c"+simulationConcept.get(i).getConceptID());
+//				System.out.println("c"+simulationConcept.get(i).getConceptID());
 			}
 			
 //			for (int i=0;i<c.length;i++)
@@ -278,23 +278,22 @@ public class pcjfcm {
 				map.connect("c"+con.getConceptFrom(), "c"+con.getConceptFrom()+" -> "+"c"+con.getConceptTo(), "c"+con.getConceptTo());
 			}			
 
-	        session.getTransaction().commit();
-	        session.clear();
-	        session.close();
-
 	        DecimalFormat df2 = new DecimalFormat("#.##");
 			
+	        int sId = 1;
 			for(int i=0;i<NumberIterations;i++)
 			{
 				for (int j=0;j<simulationConcept.size();j++)
 				{
 					FCMSimulationResult res = new FCMSimulationResult();
-					res.setId(i+1);
+					res.setId(sId);
 					res.setIteration_id(i+1);
 					res.setConceptID(simulationConcept.get(j).getConceptID());
 					res.setInput(simulationConcept.get(j).getScaleValue());
-					res.setFCMSimulation_id(model.getId());
-					
+					res.setFCMModel_id(model.getId());
+					res.setDateAddedtoPC(date1);
+					res.setDateModified(date1);
+					res.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 					if (c[j].getOutput()==null)
 						res.setOutput(0.0);
 					else
@@ -314,9 +313,29 @@ public class pcjfcm {
 					}
 //					System.out.println((j+1)+"\t"+c[j].getName()+"\t"+c[j].getDescription()+"\t"+c[j].getOutput());
 					simulationResults.add(res);
+					sId = sId + 1;
 				}
 				map.execute();
 			}
+
+	        Query qSimulationResults = session.createQuery("from fcmmanager_simulationresult where FCMModel_id= :id");
+	        qSimulationResults.setInteger("id",model.getId());
+	        @SuppressWarnings("unchecked")
+	        List<FCMSimulationResult> simulationResult = qSimulationResults.list();
+			for (int k=0;k<simulationResult.size();k++)
+			{
+		        session.delete(simulationResult.get(k));
+			}
+
+	    	for (int j=0;j<simulationResults.size();j++)
+	    	{
+	        	session.save(simulationResults.get(j));
+	    	}
+	    	
+			session.getTransaction().commit();
+	        session.clear();
+	        session.close();
+
 	    } catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -466,7 +485,7 @@ public class pcjfcm {
 					res.setIteration_id(x+1);
 					res.setConceptID(listSimulationConcept.get(x).get(j).getConceptID());
 					res.setInput(listSimulationConcept.get(x).get(j).getScaleValue());
-					res.setFCMSimulation_id(model.getId());
+					res.setFCMModel_id(model.getId());
 					if (c[j].getOutput()==null)
 						res.setOutput(0.0);
 					else

@@ -11,7 +11,7 @@
     <property name="hibernate.connection.password">pcompass</property>
 
     <!-- JDBC connection pool (use the built-in) -->
-    <property name="hibernate.connection.pool_size">10</property>
+    <property name="hibernate.connection.pool_size">1</property>
 
     <!-- SQL dialect -->
     <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
@@ -33,7 +33,7 @@
     <mapping class="policycompass.fcmmanager.models.FCMConnection"/>
     <mapping class="policycompass.fcmmanager.models.FCMConceptActivator"/>
     <mapping class="policycompass.fcmmanager.models.FCMModelInDomain"/>
-    <mapping class="policycompass.fcmmanager.models.FCMConceptIndividual"/>
+    <mapping class="policycompass.fcmmanager.models.FCMSimulationResult"/>
 <!--	
 	<mapping resource="FCMModel.hbm.xml"/>
 	<mapping resource="FCMConcept.hbm.xml"/>
