@@ -15,6 +15,7 @@ public class FCMModelDetail {
 	List<FCMConcept> concepts;
 	List<FCMConnection> connections;
 	List<FCMConceptIndividual> conceptindividuals;
+	List<FCMSimulationResult> simulationResults;
 	
 	public FCMModel getModel() {
 		return model;
@@ -54,6 +55,14 @@ public class FCMModelDetail {
 
 	public void setConceptindividuals(List<FCMConceptIndividual> conceptindividuals) {
 		this.conceptindividuals = conceptindividuals;
+	}
+
+	public List<FCMSimulationResult> getSimulationResults() {
+		return simulationResults;
+	}
+
+	public void setSimulationResults(List<FCMSimulationResult> simulationResults) {
+		this.simulationResults = simulationResults;
 	}
 
 	public FCMModelDetail(int modelID) {
@@ -110,6 +119,16 @@ public class FCMModelDetail {
         connections = connection;
         sessionConnection.clear();
         sessionConnection.close();
+
+        Session sessionSimulationResults = HibernateUtil.getSessionFactory().openSession();
+        sessionSimulationResults.beginTransaction();
+        Query querySimulationResults = sessionSimulationResults.createQuery("from fcmmanager_simulationresult where fcmmodel_id= :id");
+        querySimulationResults.setParameter("id", modelID);
+        @SuppressWarnings("unchecked")
+        List<FCMSimulationResult> simulationResult = querySimulationResults.list();
+        simulationResults = simulationResult;
+        sessionSimulationResults.clear();
+        sessionSimulationResults.close();
 	}
 	
 }

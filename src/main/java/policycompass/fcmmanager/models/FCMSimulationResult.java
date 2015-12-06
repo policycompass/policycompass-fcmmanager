@@ -3,15 +3,22 @@ package policycompass.fcmmanager.models;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlRootElement(name = "FCM Simulation Results")
+@XmlType(propOrder = { "id", "FCMModel_id", "Concept_id", "Iteration_id", "Input", "Output", "UserID", "DateAddedtoPC", "DateModified" })
+
+@Entity (name="fcmmanager_simulationresult")
 public class FCMSimulationResult {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
 	private int id;
-	@Column(name = "FCMSimulation_id", nullable = false)
-	private int FCMSimulation_id;
+	@Column(name = "FCMModel_id", nullable = false)
+	private int FCMModel_id;
 	@Column(name = "Concept_id", nullable = false)
 	private int Concept_id;
 	@Column(name = "Iteration_id", nullable = false)
@@ -33,11 +40,11 @@ public class FCMSimulationResult {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public int getFCMSimulation_id() {
-		return FCMSimulation_id;
+	public int getFCMModel_id() {
+		return FCMModel_id;
 	}
-	public void setFCMSimulation_id(int fCMSimulation_id) {
-		FCMSimulation_id = fCMSimulation_id;
+	public void setFCMModel_id(int FCMModelId) {
+		FCMModel_id = FCMModelId;
 	}
 	public int getConceptID() {
 		return Concept_id;
