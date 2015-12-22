@@ -33,6 +33,7 @@
     <mapping class="policycompass.fcmmanager.models.FCMConnection"/>
     <mapping class="policycompass.fcmmanager.models.FCMConceptActivator"/>
     <mapping class="policycompass.fcmmanager.models.FCMModelInDomain"/>
+    <mapping class="policycompass.fcmmanager.models.FCMConceptIndividual"/>
     <mapping class="policycompass.fcmmanager.models.FCMSimulationResult"/>
 <!--	
 	<mapping resource="FCMModel.hbm.xml"/>
