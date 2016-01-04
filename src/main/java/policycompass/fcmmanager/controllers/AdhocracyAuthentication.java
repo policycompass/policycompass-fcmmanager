@@ -1,16 +1,22 @@
 package policycompass.fcmmanager.controllers;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 public class AdhocracyAuthentication {
-	public String authenticate(String userPath, String userToken)
+	public boolean authenticate(String userPath, String userToken) throws JSONException
 	{
+		AdhocracyUser aUser = new AdhocracyUser();
 		String configFile = "config.properties";
 	    Properties props = new Properties();
 	    
@@ -24,15 +30,25 @@ public class AdhocracyAuthentication {
 		    HttpURLConnection urlConnection = (HttpURLConnection) user_url.openConnection();
 		    urlConnection.addRequestProperty("X-User-Path", userPath);
 		    urlConnection.addRequestProperty("X-User-Token", userToken);
-		      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+		    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), Charset.defaultCharset()));
+		      StringBuilder sb = new StringBuilder();
+		      String line;
+		      while ((line = in.readLine()) != null) {
+		        sb.append(line);
+		      }
+		      in.close();
 		      urlConnection.disconnect();
 		      
-		    return userPath + "/" + userToken;
+		      JSONObject myObj = new JSONObject(sb.toString());
+		    aUser.setUserPath(userPath); 
+		    aUser.setUserToken(userToken);
+		    aUser.setUserURL(myObj.toString());
+		    return true;
 		} catch (FileNotFoundException ex) {
-		    return "Error1";
+		    return false;
 		    // file does not exist
 		} catch (IOException ex) {
-		    return "Error2";
+		    return false;
 		    // I/O error
 		}
 	}
