@@ -1,5 +1,6 @@
 package policycompass.fcmmanager.services;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
@@ -14,18 +15,22 @@ public class FCMModelService {
 	@GET
 	@Path("/models")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response retrieveAllModels() throws Exception {
+	public Response retrieveAllModels(@HeaderParam("HTTP_X_USER_PATH") String userPath, @HeaderParam("HTTP_X_USER_TOKEN") String token, @Context HttpServletRequest request) throws Exception {
 		Response rb = null;
-		rb = Response.ok(FCMModels.retrieveFCMModelList()).build();
+		AdhocracyAuthentication ad = new AdhocracyAuthentication();
+//		rb = Response.ok(FCMModels.retrieveFCMModelList()).build();
+		rb = Response.ok(ad.authenticate(userPath, token)).build();
 		return rb;
 	}
 
 	@GET
 	@Path("/models/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response retrieveFCMModel(@PathParam("id") int id) throws Exception {
+	public Response retrieveFCMModel(@HeaderParam("HTTP_X_USER_PATH") String userPath, @HeaderParam("HTTP_X_USER_TOKEN") String token, @Context HttpServletRequest request, @PathParam("id") int id) throws Exception {
 		Response rb = null;
-		rb = Response.ok(FCMModels.retrieveFCMModel(id)).build();
+		AdhocracyAuthentication ad = new AdhocracyAuthentication();
+		rb = Response.ok(ad.authenticate(userPath, token)).build();
+//		rb = Response.ok(FCMModels.retrieveFCMModel(id)).build();
 		return rb;
 	}
 
@@ -128,5 +133,14 @@ public class FCMModelService {
         return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();     
 //        return Response.ok(fcmmodel).build();     
     }
+
+	@GET
+	@Path("/weightcalculation/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response weightCalculation(@HeaderParam("HTTP_X_USER_PATH") String userPath, @HeaderParam("HTTP_X_USER_TOKEN") String token, @Context HttpServletRequest request, @PathParam("id") int id) throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMModels.retrieveFCMModel(id)).build();
+		return rb;
+	}
 
 }
