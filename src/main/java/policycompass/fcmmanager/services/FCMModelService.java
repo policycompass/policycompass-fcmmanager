@@ -1,8 +1,10 @@
 package policycompass.fcmmanager.services;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import policycompass.fcmmanager.controllers.*;
@@ -14,7 +16,7 @@ public class FCMModelService {
 	@GET
 	@Path("/models")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response retrieveAllModels() throws Exception {
+	public Response retrieveAllModels(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String token, @Context HttpServletRequest request) throws Exception {
 		Response rb = null;
 		rb = Response.ok(FCMModels.retrieveFCMModelList()).build();
 		return rb;
@@ -23,7 +25,7 @@ public class FCMModelService {
 	@GET
 	@Path("/models/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response retrieveFCMModel(@PathParam("id") int id) throws Exception {
+	public Response retrieveFCMModel(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String token, @Context HttpServletRequest request, @PathParam("id") int id) throws Exception {
 		Response rb = null;
 		rb = Response.ok(FCMModels.retrieveFCMModel(id)).build();
 		return rb;
@@ -42,8 +44,12 @@ public class FCMModelService {
     @Path("/models")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response createFCMModel(JSONObject fcmmodel) {
-        return Response.ok(FCMModels.createFCMModel(fcmmodel)).build();     
+    public Response createFCMModel(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String token, @Context HttpServletRequest request, JSONObject fcmmodel) throws JSONException {
+		AdhocracyAuthentication ad = new AdhocracyAuthentication();
+		if (ad.authenticate(userPath, token)==true)
+			return Response.ok(FCMModels.createFCMModel(fcmmodel)).build();
+		else
+			return Response.ok("Adhocracy authentication failed due to wrong response.").build();     
 //        return Response.ok(fcmmodel).build();     
     }
 
@@ -51,8 +57,12 @@ public class FCMModelService {
     @Path("/models/{id}")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel) {
-    	return Response.ok(FCMModels.updateFCMModel(id, fcmmodel)).build();
+    public Response updateFCMModel(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String token, @Context HttpServletRequest request, @PathParam("id") int id, JSONObject fcmmodel) throws JSONException {
+		AdhocracyAuthentication ad = new AdhocracyAuthentication();
+		if (ad.authenticate(userPath, token)==true)
+	    	return Response.ok(FCMModels.updateFCMModel(id, fcmmodel)).build();
+		else
+			return Response.ok("Adhocracy authentication failed due to wrong response.").build();     
 //    	FCMModels.updateFCMModel(id, fcmmodel);
 //        return Response.ok(fcmmodel).build();     
     }
@@ -61,9 +71,15 @@ public class FCMModelService {
     @DELETE 
     @Path("/models/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteFCMModel(@PathParam("id") int id) {
-    	FCMModels.deleteFCMModel(id);            
-        return Response.status(204).build();     
+    public Response deleteFCMModel(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String token, @Context HttpServletRequest request, @PathParam("id") int id) throws JSONException {
+		AdhocracyAuthentication ad = new AdhocracyAuthentication();
+		if (ad.authenticate(userPath, token)==true)
+		{
+	    	FCMModels.deleteFCMModel(id);            
+	    	return Response.status(204).build(); 
+		}
+		else
+			return Response.ok("Adhocracy authentication failed due to wrong response.").build();     
     }
 
 	@GET
@@ -115,7 +131,7 @@ public class FCMModelService {
     @Path("/simulation")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response runFCMSimulation(JSONObject fcmmodel) {
+    public Response runFCMSimulation(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String token, @Context HttpServletRequest request, JSONObject fcmmodel) {
         return Response.ok(pcjfcm.runFCMSimulation(fcmmodel)).build();     
 //        return Response.ok(fcmmodel).build();     
     }
@@ -124,9 +140,18 @@ public class FCMModelService {
     @Path("/impactanalysis/{id}")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response runImpactAnaylsis(@PathParam("id") int id, JSONObject fcmmodel) {
+    public Response runImpactAnaylsis(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String token, @Context HttpServletRequest request, @PathParam("id") int id, JSONObject fcmmodel) {
         return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();     
 //        return Response.ok(fcmmodel).build();     
     }
+
+	@GET
+	@Path("/weightcalculation/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response weightCalculation(@HeaderParam("HTTP_X_USER_PATH") String userPath, @HeaderParam("HTTP_X_USER_TOKEN") String token, @Context HttpServletRequest request, @PathParam("id") int id) throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMModels.retrieveFCMModel(id)).build();
+		return rb;
+	}
 
 }
