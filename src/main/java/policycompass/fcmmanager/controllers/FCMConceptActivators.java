@@ -18,6 +18,7 @@ public class FCMConceptActivators {
         @SuppressWarnings("unchecked")
         List<FCMConceptActivator> activator = query.list();
         session.clear();
+	session.close();
         
 		return activator;
 	}	
