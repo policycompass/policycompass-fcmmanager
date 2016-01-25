@@ -5,11 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-@XmlRootElement(name = "FCM Models")
-@XmlType(propOrder = { "id", "title", "description", "keywords", "userID", "DateAddedtoPC", "DateModified", "viewsCount" })
 
 @Entity (name="fcmmanager_models")
 public class FCMModel {

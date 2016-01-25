@@ -3,11 +3,6 @@ package policycompass.fcmmanager.models;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-@XmlRootElement(name = "FCM Model In Domain")
-@XmlType(propOrder = { "id", "fcmmodel_id", "domain_id" })
 
 @Entity (name="fcmmanager_modelindomain")
 public class FCMModelInDomain {
