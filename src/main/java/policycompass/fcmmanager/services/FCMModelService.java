@@ -2,6 +2,7 @@ package policycompass.fcmmanager.services;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import javax.ws.rs.HeaderParam;
 
 import org.codehaus.jettison.json.JSONObject;
 
@@ -38,32 +39,32 @@ public class FCMModelService {
 		return rb;
 	}
 
-    @POST 
+    @POST
     @Path("/models")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response createFCMModel(JSONObject fcmmodel) {
-        return Response.ok(FCMModels.createFCMModel(fcmmodel)).build();     
-//        return Response.ok(fcmmodel).build();     
+        return Response.ok(FCMModels.createFCMModel(fcmmodel)).build();
+//        return Response.ok(fcmmodel).build();
     }
 
-    @PUT 
+    @PUT
     @Path("/models/{id}")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel) {
     	return Response.ok(FCMModels.updateFCMModel(id, fcmmodel)).build();
 //    	FCMModels.updateFCMModel(id, fcmmodel);
-//        return Response.ok(fcmmodel).build();     
+//        return Response.ok(fcmmodel).build();
     }
 
 
-    @DELETE 
+    @DELETE
     @Path("/models/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response deleteFCMModel(@PathParam("id") int id) {
-    	FCMModels.deleteFCMModel(id);            
-        return Response.status(204).build();     
+    	FCMModels.deleteFCMModel(id);
+        return Response.status(204).build();
     }
 
 	@GET
@@ -111,22 +112,22 @@ public class FCMModelService {
 		return rb;
 	}
 
-	@POST 
+	@POST
     @Path("/simulation")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response runFCMSimulation(JSONObject fcmmodel) {
-        return Response.ok(pcjfcm.runFCMSimulation(fcmmodel)).build();     
-//        return Response.ok(fcmmodel).build();     
+        return Response.ok(pcjfcm.runFCMSimulation(fcmmodel)).build();
+//        return Response.ok(fcmmodel).build();
     }
 
-	@POST 
+	@POST
     @Path("/impactanalysis/{id}")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response runImpactAnaylsis(@PathParam("id") int id, JSONObject fcmmodel) {
-        return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();     
-//        return Response.ok(fcmmodel).build();     
+        return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();
+//        return Response.ok(fcmmodel).build();
     }
 
 }
