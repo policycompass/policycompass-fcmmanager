@@ -17,8 +17,8 @@ import policycompass.fcmmanager.models.*;;
 
 public class FCMModels {
 
-	public static FCMModelDetail retrieveFCMModel(int id) {
-		FCMModelDetail model = new FCMModelDetail(id);
+	public static FCMModelDetail retrieveFCMModel(String userPath, String userToken, int id) {
+		FCMModelDetail model = new FCMModelDetail(userPath, id);
 
 		return model;
 	}
