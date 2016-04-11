@@ -73,6 +73,9 @@ public class FCMModel {
 	public int getViewsCount() { return ViewsCount; }
 	public void setViewsCount(int viewscount) { this.ViewsCount = viewscount; }
 
+	public String getUserPath() { return UserPath; }
+	public void setUserPath(String userpath) { this.UserPath = userpath; }
+
 	@Override
 	public String toString() { return getId() + ", " + getTitle() + ", " + getDescription(); }
 }
