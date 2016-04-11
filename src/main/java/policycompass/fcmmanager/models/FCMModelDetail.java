@@ -98,9 +98,10 @@ public class FCMModelDetail {
 
 	public FCMModelDetail(String userPath, int modelID) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query query = session.createQuery("from fcmmanager_models where id= :id and userPath=:userPath");
+		//Query query = session.createQuery("from fcmmanager_models where id= :id and userPath=:userPath");
+		Query query = session.createQuery("from fcmmanager_models where id= :id");
 		query.setInteger("id", modelID);
-		query.setString("userPath", userPath);
+		//query.setString("userPath", userPath);
 		model = (FCMModel) query.uniqueResult();
 		if(model!=null){
 			Query queryDomain = session.createQuery("from fcmmanager_modelindomain where fcmmodel_id= :id");
