@@ -26,7 +26,9 @@ public class FCMModel {
 	private Date DateModified;
 	@Column(name = "ViewsCount", nullable = false)
 	private int ViewsCount;
-	
+	@Column(name = "UserPath", nullable = false)
+	private String UserPath;
+
 	public FCMModel() {
 		this.id = 0;
 		this.Title = "";
@@ -34,15 +36,17 @@ public class FCMModel {
 		this.Keywords = "";
 		this.UserID = 0;
 		this.ViewsCount = 0;
+		this.UserPath="";
 	}
 
-	public FCMModel(int fcmid, String title, String description, String keywords, int userid, int viewscount) {
+	public FCMModel(int fcmid, String title, String description, String keywords, int userid, int viewscount, String UserPath) {
 		this.id = fcmid;
 		this.Title = title;
 		this.Description = description;
 		this.Keywords = keywords;
 		this.UserID = userid;
 		this.ViewsCount = viewscount;
+		this.UserPath=UserPath;
 	}
 
 	public int getId() { return id; }
