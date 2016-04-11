@@ -35,7 +35,7 @@ public class FCMModels {
 		return model;
 	}
 
-	public static FCMModelDetail createFCMModel(JSONObject jsonModel) {
+	public static FCMModelDetail createFCMModel(String userPath, String userToken, JSONObject jsonModel) {
 
 		FCMModel model = new FCMModel();
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
@@ -52,9 +52,10 @@ public class FCMModels {
 			model.setTitle(jsonModel.getJSONObject("data").get("ModelTitle").toString());
 			model.setDescription(jsonModel.getJSONObject("data").get("ModelDesc").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").get("ModelKeywords").toString());
-			model.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
+			//model.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 			model.setDateAddedtoPC(date1);
 			model.setDateModified(date1);
+			model.setUserPath(userPath);
 			model.setViewsCount(0);
 
 			JSONArray concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
@@ -139,7 +140,7 @@ public class FCMModels {
 		session.clear();
 		session.close();
 
-		return (retrieveFCMModel(modelID));
+		return (retrieveFCMModel(userPath, userToken, modelID));
 	}
 
 	public static FCMModelDetail updateFCMModel(int id, JSONObject jsonModel) {
@@ -317,7 +318,7 @@ public class FCMModels {
 		session.clear();
 		session.close();
 
-		return (retrieveFCMModel(id));
+		return (retrieveFCMModel("", "", id));
 		// return(rtnStr);
 	}
 
