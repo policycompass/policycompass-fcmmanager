@@ -24,9 +24,9 @@ public class FCMModelService {
 	@GET
 	@Path("/models/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response retrieveFCMModel(@PathParam("id") int id) throws Exception {
+	public Response retrieveFCMModel(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String userToken, @PathParam("id") int id) throws Exception {
 		Response rb = null;
-		rb = Response.ok(FCMModels.retrieveFCMModel(id)).build();
+		rb = Response.ok(FCMModels.retrieveFCMModel(userPath, userToken, id)).build();
 		return rb;
 	}
 
@@ -39,33 +39,33 @@ public class FCMModelService {
 		return rb;
 	}
 
-    @POST
-    @Path("/models")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response createFCMModel(JSONObject fcmmodel) {
-        return Response.ok(FCMModels.createFCMModel(fcmmodel)).build();
+	@POST
+	@Path("/models")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response createFCMModel(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String userToken, JSONObject fcmmodel) {
+		return Response.ok(FCMModels.createFCMModel(userPath, userToken, fcmmodel)).build();
 //        return Response.ok(fcmmodel).build();
-    }
+	}
 
-    @PUT
-    @Path("/models/{id}")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel) {
-    	return Response.ok(FCMModels.updateFCMModel(id, fcmmodel)).build();
+	@PUT
+	@Path("/models/{id}")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel) {
+		return Response.ok(FCMModels.updateFCMModel(id, fcmmodel)).build();
 //    	FCMModels.updateFCMModel(id, fcmmodel);
 //        return Response.ok(fcmmodel).build();
-    }
+	}
 
 
-    @DELETE
-    @Path("/models/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteFCMModel(@PathParam("id") int id) {
-    	FCMModels.deleteFCMModel(id);
-        return Response.status(204).build();
-    }
+	@DELETE
+	@Path("/models/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response deleteFCMModel(@PathParam("id") int id) {
+		FCMModels.deleteFCMModel(id);
+		return Response.status(204).build();
+	}
 
 	@GET
 	@Path("/loaddata")
