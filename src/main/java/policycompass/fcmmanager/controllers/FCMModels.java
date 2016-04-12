@@ -1,5 +1,9 @@
 package policycompass.fcmmanager.controllers;
-
+import java.io.*;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +18,7 @@ import org.hibernate.criterion.Projections;
 
 import policycompass.fcmmanager.hibernate.HibernateUtil;
 import policycompass.fcmmanager.models.*;;
+
 
 public class FCMModels {
 
@@ -52,7 +57,7 @@ public class FCMModels {
 			model.setTitle(jsonModel.getJSONObject("data").get("ModelTitle").toString());
 			model.setDescription(jsonModel.getJSONObject("data").get("ModelDesc").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").get("ModelKeywords").toString());
-			//model.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
+			model.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 			model.setDateAddedtoPC(date1);
 			model.setDateModified(date1);
 			model.setUserPath(userPath);
@@ -753,4 +758,81 @@ public class FCMModels {
 		session.close();
 		return model;
 	}
+
+	public static int isAdminUser(String userPath,String userToken)
+	{
+		int returnValue=-1;
+		String charset = "UTF-8";
+		String requestURL = "https://adhocracy-frontend-stage.policycompass.eu/api";
+		String requestURLGod = "https://adhocracy-frontend-stage.policycompass.eu/api/principals/groups/gods/";
+
+		try {
+
+			URL url = new URL(requestURL);
+			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+			httpConn.setUseCaches(false);
+			httpConn.setDoOutput(true); // indicates POST method
+			httpConn.setDoInput(true);
+
+			httpConn.setRequestProperty("X-User-Path", userPath);
+			httpConn.setRequestProperty("X-User-Token", userToken);
+
+			List<String> response = new ArrayList<String>();
+			int status = httpConn.getResponseCode();
+			if (status == HttpURLConnection.HTTP_OK) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(
+						httpConn.getInputStream()));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					response.add(line);
+				}
+				reader.close();
+				httpConn.disconnect();
+
+				if(response.toString().toLowerCase().contains("error")){
+					returnValue=-1;
+					throw new IOException("Invalid User." );
+				}
+				else{
+					returnValue=0;
+
+					url = new URL(requestURLGod);
+					httpConn = (HttpURLConnection) url.openConnection();
+					httpConn.setUseCaches(false);
+					httpConn.setDoOutput(true); // indicates POST method
+					httpConn.setDoInput(true);
+
+					httpConn.setRequestProperty("X-User-Path", userPath);
+					httpConn.setRequestProperty("X-User-Token", userToken);
+					response = new ArrayList<String>();
+					status = httpConn.getResponseCode();
+					if (status == HttpURLConnection.HTTP_OK) {
+						reader = new BufferedReader(new InputStreamReader(
+								httpConn.getInputStream()));
+						line = null;
+						while ((line = reader.readLine()) != null) {
+							response.add(line);
+						}
+						reader.close();
+						httpConn.disconnect();
+						if(response.toString().toLowerCase().contains("error")){
+							returnValue=0;
+						}
+						else{
+							returnValue=1;
+						}
+					}
+				}
+
+			} else {
+				throw new IOException("Server returned non-OK status: " + status);
+			}
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return returnValue;
+	}
+
+
 }
