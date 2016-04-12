@@ -41,6 +41,9 @@ public class FCMModels {
 	}
 
 	public static FCMModelDetail createFCMModel(String userPath, String userToken, JSONObject jsonModel) {
+		int adminUserFlag=isAdminUser(userPath,userToken);
+		if(adminUserFlag<0)
+			return null;
 
 		FCMModel model = new FCMModel();
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
@@ -148,7 +151,9 @@ public class FCMModels {
 		return (retrieveFCMModel(userPath, userToken, modelID));
 	}
 
-	public static FCMModelDetail updateFCMModel(int id, JSONObject jsonModel) {
+	public static FCMModelDetail updateFCMModel(int id, JSONObject jsonModel, String userPath,String userToken) {
+		int adminUserFlag=isAdminUser( userPath, userToken);
+
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
 		Date date1 = new Date();
@@ -221,9 +226,26 @@ public class FCMModels {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		session.beginTransaction();
-		Query qModel = session.createQuery("from fcmmanager_models where id= :id");
+		Query qModel;
+		if(adminUserFlag==1)
+			qModel = session.createQuery("from fcmmanager_models where id= :id");
+		else
+			qModel = session.createQuery("from fcmmanager_models where id= :id and userPath=:userPath");
 		qModel.setInteger("id", id);
+
+		if(adminUserFlag!=1)
+			qModel.setString("userPath", userPath);
+
 		FCMModel model = (FCMModel) qModel.uniqueResult();
+
+		if(model == null){
+			session.getTransaction().rollback();
+			session.clear();
+			session.close();
+
+			return (retrieveFCMModel("", "", 0));
+		}
+
 		model.setDateModified(date1);
 		session.update(model);
 
