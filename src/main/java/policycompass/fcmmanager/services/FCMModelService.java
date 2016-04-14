@@ -12,6 +12,7 @@ import policycompass.fcmmanager.simulation.pcjfcm;
 @Path("/fcmmanager")
 public class FCMModelService {
 
+
 	@GET
 	@Path("/models")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -52,8 +53,8 @@ public class FCMModelService {
 	@Path("/models/{id}")
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel) {
-		return Response.ok(FCMModels.updateFCMModel(id, fcmmodel)).build();
+	public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel,@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String userToken) {
+		return Response.ok(FCMModels.updateFCMModel(id, fcmmodel, userPath, userToken)).build();
 //    	FCMModels.updateFCMModel(id, fcmmodel);
 //        return Response.ok(fcmmodel).build();
 	}
@@ -113,21 +114,21 @@ public class FCMModelService {
 	}
 
 	@POST
-    @Path("/simulation")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response runFCMSimulation(JSONObject fcmmodel) {
-        return Response.ok(pcjfcm.runFCMSimulation(fcmmodel)).build();
+	@Path("/simulation")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response runFCMSimulation(JSONObject fcmmodel) {
+		return Response.ok(pcjfcm.runFCMSimulation(fcmmodel)).build();
 //        return Response.ok(fcmmodel).build();
-    }
+	}
 
 	@POST
-    @Path("/impactanalysis/{id}")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response runImpactAnaylsis(@PathParam("id") int id, JSONObject fcmmodel) {
-        return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();
+	@Path("/impactanalysis/{id}")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response runImpactAnaylsis(@PathParam("id") int id, JSONObject fcmmodel) {
+		return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();
 //        return Response.ok(fcmmodel).build();
-    }
+	}
 
 }
