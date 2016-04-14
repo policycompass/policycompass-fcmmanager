@@ -44,13 +44,15 @@ public class FCMModels {
 	}
 
 	public static FCMModelDetail createFCMModel(String userPath, String userToken, JSONObject jsonModel) {
-		int adminUserFlag=isAdminUser(userPath,userToken);
-		if(adminUserFlag<0)
-			return null;
+		//check is user authorized to create a model. If not authorized then throw exception with message.
+		authenticateRquest(userPath,userToken);
 
 		FCMModel model = new FCMModel();
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
+
+		List<FCMModelInDomain> domain = new ArrayList<FCMModelInDomain>();
+
 
 		Date date1 = new Date();
 
@@ -68,6 +70,8 @@ public class FCMModels {
 			model.setDateModified(date1);
 			model.setUserPath(userPath);
 			model.setViewsCount(0);
+
+
 
 			JSONArray concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
 			for (int i = 0; i < concepts.length(); i++) {
