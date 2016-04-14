@@ -158,8 +158,9 @@ public class FCMModels {
 		return (retrieveFCMModel(userPath, userToken, modelID));
 	}
 
-	public static FCMModelDetail updateFCMModel(int id, JSONObject jsonModel, String userPath,String userToken) {
-		int adminUserFlag=isAdminUser( userPath, userToken);
+	public static FCMModelDetail updateFCMModel(int id, JSONObject jsonModel, String userPath, String userToken) {
+		//check is user authorized to update the model. If not authorized then throw exception with message.
+		authenticateRquest(userPath,userToken);
 
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
