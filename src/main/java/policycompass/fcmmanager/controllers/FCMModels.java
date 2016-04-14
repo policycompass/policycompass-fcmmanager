@@ -784,79 +784,33 @@ public class FCMModels {
 		return model;
 	}
 
-	public static int isAdminUser(String userPath,String userToken)
+	public static void authenticateRquest(String userPath,String userToken)
 	{
-		int returnValue=-1;
-		String charset = "UTF-8";
-		String requestURL = "https://adhocracy-frontend-stage.policycompass.eu/api";
-		String requestURLGod = "https://adhocracy-frontend-stage.policycompass.eu/api/principals/groups/gods/";
+		if(userPath == null || userToken == null)
+			throw new NotAuthorizedException("Invalid request.");
 
-		try {
+		Client c = Client.create();
+		WebResource resource = c.resource(ADHOCRACY_URL);
+		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON_TYPE)
+				.header("X-User-Path", userPath)
+				.header("X-User-Token", userToken).get(ClientResponse.class);
 
-			URL url = new URL(requestURL);
-			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
-			httpConn.setUseCaches(false);
-			httpConn.setDoOutput(true); // indicates POST method
-			httpConn.setDoInput(true);
 
-			httpConn.setRequestProperty("X-User-Path", userPath);
-			httpConn.setRequestProperty("X-User-Token", userToken);
+		try{
+			JSONObject json = response.getEntity(JSONObject.class);
+			if(json.has("errors"))
+				throw new NotAuthorizedException("You are not authorized.");
 
-			List<String> response = new ArrayList<String>();
-			int status = httpConn.getResponseCode();
-			if (status == HttpURLConnection.HTTP_OK) {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(
-						httpConn.getInputStream()));
-				String line = null;
-				while ((line = reader.readLine()) != null) {
-					response.add(line);
-				}
-				reader.close();
-				httpConn.disconnect();
-
-				if(response.toString().toLowerCase().contains("error")){
-					returnValue=-1;
-					throw new IOException("Invalid User." );
-				}
-				else{
-					returnValue=0;
-
-					url = new URL(requestURLGod);
-					httpConn = (HttpURLConnection) url.openConnection();
-					httpConn.setUseCaches(false);
-					httpConn.setDoOutput(true); // indicates POST method
-					httpConn.setDoInput(true);
-
-					httpConn.setRequestProperty("X-User-Path", userPath);
-					httpConn.setRequestProperty("X-User-Token", userToken);
-					response = new ArrayList<String>();
-					status = httpConn.getResponseCode();
-					if (status == HttpURLConnection.HTTP_OK) {
-						reader = new BufferedReader(new InputStreamReader(
-								httpConn.getInputStream()));
-						line = null;
-						while ((line = reader.readLine()) != null) {
-							response.add(line);
-						}
-						reader.close();
-						httpConn.disconnect();
-						if(response.toString().toLowerCase().contains("error")){
-							returnValue=0;
-						}
-						else{
-							returnValue=1;
-						}
-					}
-				}
-
-			} else {
-				throw new IOException("Server returned non-OK status: " + status);
-			}
-
-		} catch (IOException ex) {
-			ex.printStackTrace();
+			JSONObject metadata = json.getJSONObject("data").getJSONObject("adhocracy_core.sheets.metadata.IMetadata");
+			if(metadata.getString("deleted").equals("true") || metadata.getString("hidden").equals("true"))
+				throw new NotAuthorizedException("You are not authorized.");
 		}
-		return returnValue;
+		catch(Exception ex){
+			throw new NotAuthorizedException("You are not authorized.");
+		}
+	}
+
+
 	}
 
 
