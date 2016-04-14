@@ -22,6 +22,8 @@ import policycompass.fcmmanager.models.*;;
 
 
 public class FCMModels {
+	private final static ADHOCRACY_URL = "http://adhocracy-frontend-stage.policycompass.eu/api";
+	private final static ADHOCRACY_GODS_URL = "http://adhocracy-frontend-stage.policycompass.eu/api/principals/groups/gods/";
 
 	public static FCMModelDetail retrieveFCMModel(String userPath, String userToken, int id) {
 		FCMModelDetail model = new FCMModelDetail(userPath, id);
