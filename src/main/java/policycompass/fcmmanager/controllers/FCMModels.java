@@ -810,8 +810,25 @@ public class FCMModels {
 		}
 	}
 
+	public static boolean isGods(String userPath) {
+		boolean userIsGod=false;
+		Client c = Client.create();
+		WebResource resource = c.resource(ADHOCRACY_GODS_URL);
+		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
 
+		// This might not work out of the box. Or be missing dependencies. Needs to be checked.
+		JSONObject json = response.getEntity(JSONObject.class);
+		List<String> gods = new ArrayList<>();
+		try {
+			JSONArray users = json.getJSONObject("data").getJSONObject("adhocracy_core.sheets.principal.IGroup").getJSONArray("users");
+			for(int i = 0; i < users.length(); i++)
+				gods.add(users.getString(i));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		userIsGod = gods.contains(userPath);
+		return userIsGod;
 	}
-
 
 }
