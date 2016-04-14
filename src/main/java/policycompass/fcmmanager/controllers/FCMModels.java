@@ -1,12 +1,13 @@
 package policycompass.fcmmanager.controllers;
 import java.io.*;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import com.sun.jersey.api.client.*;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
