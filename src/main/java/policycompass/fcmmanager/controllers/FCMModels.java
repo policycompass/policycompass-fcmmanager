@@ -235,14 +235,20 @@ public class FCMModels {
 
 		session.beginTransaction();
 		Query qModel;
-		if(adminUserFlag==1)
-			qModel = session.createQuery("from fcmmanager_models where id= :id");
-		else
-			qModel = session.createQuery("from fcmmanager_models where id= :id and userPath=:userPath");
-		qModel.setInteger("id", id);
 
-		if(adminUserFlag!=1)
+		//is Admin user or not
+		boolean isUserGods=isGods(userPath);
+		if(isUserGods){
+			//If user role is admin then allow to modify the model
+			qModel = session.createQuery("from fcmmanager_models where id= :id");
+			qModel.setInteger("id", id);
+		}
+		else{
+			//If user role is non admin then allow to modify the model if it was created by him
+			qModel = session.createQuery("from fcmmanager_models where id= :id and userPath=:userPath");
+			qModel.setInteger("id", id);
 			qModel.setString("userPath", userPath);
+		}
 
 		FCMModel model = (FCMModel) qModel.uniqueResult();
 
