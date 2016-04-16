@@ -8,6 +8,9 @@ import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import com.sun.jersey.api.client.*;
+import javax.naming.NamingException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
