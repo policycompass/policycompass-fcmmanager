@@ -808,7 +808,13 @@ public class FCMModels {
 	public static void authenticateRquest(String userPath,String userToken)
 	{
 		//get url from configuration.
-		try{getApi();} catch(Exception ex){}
+		if(ADHOCRACY_URL == null || ADHOCRACY_URL.isEmpty()) {
+			try {
+				getApi();
+			} catch(Exception ex) {
+				throw new NotAuthorizedException("Unexpected error trying to resolve validation URLs");
+			}
+		}
 
 		if(userPath == null || userToken == null)
 			throw new NotAuthorizedException("Invalid request.");
