@@ -23,10 +23,10 @@ import org.hibernate.criterion.Projections;
 import policycompass.fcmmanager.hibernate.HibernateUtil;
 import policycompass.fcmmanager.models.*;;
 
-
 public class FCMModels {
-	private final static ADHOCRACY_URL = "http://adhocracy-frontend-stage.policycompass.eu/api";
-	private final static ADHOCRACY_GODS_URL = "http://adhocracy-frontend-stage.policycompass.eu/api/principals/groups/gods/";
+	private static String ADHOCRACY_URL ="";
+	private static String ADHOCRACY_GODS_URL="";
+
 
 	public static FCMModelDetail retrieveFCMModel(String userPath, String userToken, int id) {
 		FCMModelDetail model = new FCMModelDetail(userPath, id);
