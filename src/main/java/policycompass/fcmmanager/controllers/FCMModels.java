@@ -807,6 +807,9 @@ public class FCMModels {
 
 	public static void authenticateRquest(String userPath,String userToken)
 	{
+		//get url from configuration.
+		try{getApi();} catch(Exception ex){}
+
 		if(userPath == null || userToken == null)
 			throw new NotAuthorizedException("Invalid request.");
 
