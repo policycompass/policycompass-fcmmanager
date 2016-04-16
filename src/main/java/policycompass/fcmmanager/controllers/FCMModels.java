@@ -798,6 +798,13 @@ public class FCMModels {
 		return model;
 	}
 
+	public static void getApi() throws NamingException
+	{
+		Context env = (Context)new InitialContext().lookup("java:comp/env");
+		ADHOCRACY_URL = (String)env.lookup("adhocracy.api"); //get api url
+		ADHOCRACY_GODS_URL = (String)env.lookup("adhocracy.god"); //getgods url
+	}
+
 	public static void authenticateRquest(String userPath,String userToken)
 	{
 		if(userPath == null || userToken == null)
@@ -851,4 +858,6 @@ public class FCMModels {
 					.entity(message).type(MediaType.TEXT_PLAIN).build());
 		}
 	}
+
+
 }
