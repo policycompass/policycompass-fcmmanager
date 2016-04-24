@@ -55,7 +55,7 @@ public class FCMModelDetail {
 	public void setConceptindividuals(List<FCMConceptIndividual> conceptindividuals) {
 		this.conceptindividuals = conceptindividuals;
 	}
-
+/*
 	public FCMModelDetail(int modelID) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Query query = session.createQuery("from fcmmanager_models where id= :id");
@@ -94,5 +94,48 @@ public class FCMModelDetail {
 		session.clear();
 		session.close();
 	}
+        */
 
+	public FCMModelDetail(String userPath, int modelID) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		//Query query = session.createQuery("from fcmmanager_models where id= :id and userPath=:userPath");
+		Query query = session.createQuery("from fcmmanager_models where id= :id");
+		query.setInteger("id", modelID);
+		//query.setString("userPath", userPath);
+		model = (FCMModel) query.uniqueResult();
+		if(model!=null){
+			Query queryDomain = session.createQuery("from fcmmanager_modelindomain where fcmmodel_id= :id");
+			queryDomain.setInteger("id", modelID);
+			@SuppressWarnings("unchecked")
+			List<FCMModelInDomain> domain = queryDomain.list();
+			domains = domain;
+
+			Query queryConcept = session.createQuery("from fcmmanager_concepts where fcmmodel_id= :id");
+			queryConcept.setInteger("id", modelID);
+			@SuppressWarnings("unchecked")
+			List<FCMConcept> concept = queryConcept.list();
+			concepts = concept;
+
+			List<Integer> ConceptIDs = new ArrayList<Integer>();
+			for (FCMConcept con : concept) {
+				ConceptIDs.add(con.getId());
+			}
+
+			Query queryConceptIndividual = session
+					.createQuery("from fcmmanager_conceptindividuals where concept_id in ( :mId)");
+			queryConceptIndividual.setParameterList("mId", ConceptIDs);
+			@SuppressWarnings("unchecked")
+			List<FCMConceptIndividual> conceptIndividual = queryConceptIndividual.list();
+			conceptindividuals = conceptIndividual;
+
+			Query queryConnection = session.createQuery("from fcmmanager_connections where fcmmodel_id= :id");
+			queryConnection.setParameter("id", modelID);
+			@SuppressWarnings("unchecked")
+
+			List<FCMConnection> connection = queryConnection.list();
+			connections = connection;
+		}
+		session.clear();
+		session.close();
+	}
 }

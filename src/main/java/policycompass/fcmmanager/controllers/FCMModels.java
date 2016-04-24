@@ -1,8 +1,16 @@
 package policycompass.fcmmanager.controllers;
-
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import com.sun.jersey.api.client.*;
+import javax.naming.NamingException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -16,9 +24,12 @@ import policycompass.fcmmanager.hibernate.HibernateUtil;
 import policycompass.fcmmanager.models.*;;
 
 public class FCMModels {
+	private static String ADHOCRACY_URL ="";
+	private static String ADHOCRACY_GODS_URL="";
 
-	public static FCMModelDetail retrieveFCMModel(int id) {
-		FCMModelDetail model = new FCMModelDetail(id);
+
+	public static FCMModelDetail retrieveFCMModel(String userPath, String userToken, int id) {
+		FCMModelDetail model = new FCMModelDetail(userPath, id);
 
 		return model;
 	}
@@ -35,11 +46,16 @@ public class FCMModels {
 		return model;
 	}
 
-	public static FCMModelDetail createFCMModel(JSONObject jsonModel) {
+	public static FCMModelDetail createFCMModel(String userPath, String userToken, JSONObject jsonModel) {
+		//check is user authorized to create a model. If not authorized then throw exception with message.
+		authenticateRquest(userPath,userToken);
 
 		FCMModel model = new FCMModel();
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
+
+		List<FCMModelInDomain> domain = new ArrayList<FCMModelInDomain>();
+
 
 		Date date1 = new Date();
 
@@ -55,7 +71,10 @@ public class FCMModels {
 			model.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
 			model.setDateAddedtoPC(date1);
 			model.setDateModified(date1);
+			model.setUserPath(userPath);
 			model.setViewsCount(0);
+
+
 
 			JSONArray concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
 			for (int i = 0; i < concepts.length(); i++) {
@@ -139,10 +158,13 @@ public class FCMModels {
 		session.clear();
 		session.close();
 
-		return (retrieveFCMModel(modelID));
+		return (retrieveFCMModel(userPath, userToken, modelID));
 	}
 
-	public static FCMModelDetail updateFCMModel(int id, JSONObject jsonModel) {
+	public static FCMModelDetail updateFCMModel(int id, JSONObject jsonModel, String userPath, String userToken) {
+		//check is user authorized to update the model. If not authorized then throw exception with message.
+		authenticateRquest(userPath,userToken);
+
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
 		Date date1 = new Date();
@@ -215,9 +237,32 @@ public class FCMModels {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		session.beginTransaction();
-		Query qModel = session.createQuery("from fcmmanager_models where id= :id");
-		qModel.setInteger("id", id);
+		Query qModel;
+
+		//is Admin user or not
+		boolean isUserGods=isGods(userPath);
+		if(isUserGods){
+			//If user role is admin then allow to modify the model
+			qModel = session.createQuery("from fcmmanager_models where id= :id");
+			qModel.setInteger("id", id);
+		}
+		else{
+			//If user role is non admin then allow to modify the model if it was created by him
+			qModel = session.createQuery("from fcmmanager_models where id= :id and userPath=:userPath");
+			qModel.setInteger("id", id);
+			qModel.setString("userPath", userPath);
+		}
+
 		FCMModel model = (FCMModel) qModel.uniqueResult();
+
+		if(model == null){
+			session.getTransaction().rollback();
+			session.clear();
+			session.close();
+
+			return (retrieveFCMModel("", "", 0));
+		}
+
 		model.setDateModified(date1);
 		session.update(model);
 
@@ -317,7 +362,7 @@ public class FCMModels {
 		session.clear();
 		session.close();
 
-		return (retrieveFCMModel(id));
+		return (retrieveFCMModel("", "", id));
 		// return(rtnStr);
 	}
 
@@ -752,4 +797,76 @@ public class FCMModels {
 		session.close();
 		return model;
 	}
+
+	public static void getApi() throws NamingException
+	{
+		Context env = (Context)new InitialContext().lookup("java:comp/env");
+		ADHOCRACY_URL = (String)env.lookup("adhocracy.api"); //get api url
+		ADHOCRACY_GODS_URL = (String)env.lookup("adhocracy.god"); //getgods url
+	}
+
+	public static void authenticateRquest(String userPath,String userToken)
+	{
+		//get url from configuration.
+		if(ADHOCRACY_URL == null || ADHOCRACY_URL.isEmpty()) {
+			try {
+				getApi();
+			} catch(Exception ex) {
+				throw new NotAuthorizedException("Unexpected error trying to resolve validation URLs");
+			}
+		}
+
+		if(userPath == null || userToken == null)
+			throw new NotAuthorizedException("Invalid request.");
+
+		Client c = Client.create();
+		WebResource resource = c.resource(ADHOCRACY_URL);
+		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON_TYPE)
+				.header("X-User-Path", userPath)
+				.header("X-User-Token", userToken).get(ClientResponse.class);
+
+
+		try{
+			JSONObject json = response.getEntity(JSONObject.class);
+			if(json.has("errors"))
+				throw new NotAuthorizedException("You are not authorized.");
+
+			JSONObject metadata = json.getJSONObject("data").getJSONObject("adhocracy_core.sheets.metadata.IMetadata");
+			if(metadata.getString("deleted").equals("true") || metadata.getString("hidden").equals("true"))
+				throw new NotAuthorizedException("You are not authorized.");
+		}
+		catch(Exception ex){
+			throw new NotAuthorizedException("You are not authorized.");
+		}
+	}
+
+	public static boolean isGods(String userPath) {
+		boolean userIsGod=false;
+		Client c = Client.create();
+		WebResource resource = c.resource(ADHOCRACY_GODS_URL);
+		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
+
+		// This might not work out of the box. Or be missing dependencies. Needs to be checked.
+		JSONObject json = response.getEntity(JSONObject.class);
+		List<String> gods = new ArrayList<>();
+		try {
+			JSONArray users = json.getJSONObject("data").getJSONObject("adhocracy_core.sheets.principal.IGroup").getJSONArray("users");
+			for(int i = 0; i < users.length(); i++)
+				gods.add(users.getString(i));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		userIsGod = gods.contains(userPath);
+		return userIsGod;
+	}
+
+	public static class NotAuthorizedException extends WebApplicationException {
+		public  NotAuthorizedException(String message) {
+			super(Response.status(Response.Status.UNAUTHORIZED)
+					.entity(message).type(MediaType.TEXT_PLAIN).build());
+		}
+	}
+
+
 }

@@ -2,6 +2,7 @@ package policycompass.fcmmanager.services;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import javax.ws.rs.HeaderParam;
 
 import org.codehaus.jettison.json.JSONObject;
 
@@ -10,6 +11,7 @@ import policycompass.fcmmanager.simulation.pcjfcm;
 
 @Path("/fcmmanager")
 public class FCMModelService {
+
 
 	@GET
 	@Path("/models")
@@ -23,9 +25,9 @@ public class FCMModelService {
 	@GET
 	@Path("/models/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response retrieveFCMModel(@PathParam("id") int id) throws Exception {
+	public Response retrieveFCMModel(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String userToken, @PathParam("id") int id) throws Exception {
 		Response rb = null;
-		rb = Response.ok(FCMModels.retrieveFCMModel(id)).build();
+		rb = Response.ok(FCMModels.retrieveFCMModel(userPath, userToken, id)).build();
 		return rb;
 	}
 
@@ -38,33 +40,33 @@ public class FCMModelService {
 		return rb;
 	}
 
-    @POST 
-    @Path("/models")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response createFCMModel(JSONObject fcmmodel) {
-        return Response.ok(FCMModels.createFCMModel(fcmmodel)).build();     
-//        return Response.ok(fcmmodel).build();     
-    }
+	@POST
+	@Path("/models")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response createFCMModel(@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String userToken, JSONObject fcmmodel) {
+		return Response.ok(FCMModels.createFCMModel(userPath, userToken, fcmmodel)).build();
+//        return Response.ok(fcmmodel).build();
+	}
 
-    @PUT 
-    @Path("/models/{id}")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel) {
-    	return Response.ok(FCMModels.updateFCMModel(id, fcmmodel)).build();
+	@PUT
+	@Path("/models/{id}")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel,@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String userToken) {
+		return Response.ok(FCMModels.updateFCMModel(id, fcmmodel, userPath, userToken)).build();
 //    	FCMModels.updateFCMModel(id, fcmmodel);
-//        return Response.ok(fcmmodel).build();     
-    }
+//        return Response.ok(fcmmodel).build();
+	}
 
 
-    @DELETE 
-    @Path("/models/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteFCMModel(@PathParam("id") int id) {
-    	FCMModels.deleteFCMModel(id);            
-        return Response.status(204).build();     
-    }
+	@DELETE
+	@Path("/models/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response deleteFCMModel(@PathParam("id") int id) {
+		FCMModels.deleteFCMModel(id);
+		return Response.status(204).build();
+	}
 
 	@GET
 	@Path("/loaddata")
@@ -111,22 +113,22 @@ public class FCMModelService {
 		return rb;
 	}
 
-	@POST 
-    @Path("/simulation")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response runFCMSimulation(JSONObject fcmmodel) {
-        return Response.ok(pcjfcm.runFCMSimulation(fcmmodel)).build();     
-//        return Response.ok(fcmmodel).build();     
-    }
+	@POST
+	@Path("/simulation")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response runFCMSimulation(JSONObject fcmmodel) {
+		return Response.ok(pcjfcm.runFCMSimulation(fcmmodel)).build();
+//        return Response.ok(fcmmodel).build();
+	}
 
-	@POST 
-    @Path("/impactanalysis/{id}")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response runImpactAnaylsis(@PathParam("id") int id, JSONObject fcmmodel) {
-        return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();     
-//        return Response.ok(fcmmodel).build();     
-    }
+	@POST
+	@Path("/impactanalysis/{id}")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response runImpactAnaylsis(@PathParam("id") int id, JSONObject fcmmodel) {
+		return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();
+//        return Response.ok(fcmmodel).build();
+	}
 
 }
