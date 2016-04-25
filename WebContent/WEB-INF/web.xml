@@ -50,11 +50,11 @@
     <env-entry>
         <env-entry-name>adhocracy.api</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>http://adhocracy-frontend-stage.policycompass.eu/api</env-entry-value>
+        <env-entry-value>https://adhocracy-frontend-stage.policycompass.eu/api/</env-entry-value>
     </env-entry>
     <env-entry>
         <env-entry-name>adhocracy.god</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>http://adhocracy-frontend-stage.policycompass.eu/api/principals/groups/gods/</env-entry-value>
+        <env-entry-value>https://adhocracy-frontend-stage.policycompass.eu/api/principals/groups/gods/</env-entry-value>
     </env-entry>
 </web-app>
