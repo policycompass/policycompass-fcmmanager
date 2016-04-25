@@ -843,21 +843,22 @@ public class FCMModels {
 			;
 		}
 
+		int step=0;
 		try{
 			ClientResponse response = resource.accept(MediaType.APPLICATION_JSON_TYPE)
 					.header("X-User-Path", userPath)
 					.header("X-User-Token", userToken).get(ClientResponse.class);
-
+			step++;
 			JSONObject json = response.getEntity(JSONObject.class);
 			if(json.has("errors"))
 				throw new NotAuthorizedException("You are not authorized.");
-
+			step++;
 			JSONObject metadata = json.getJSONObject("data").getJSONObject("adhocracy_core.sheets.metadata.IMetadata");
 			if(metadata.getString("deleted").equals("true") || metadata.getString("hidden").equals("true"))
 				throw new NotAuthorizedException("You are not authorized.");
 		}
 		catch(Exception ex){
-			throw new NotAuthorizedException("You are not authorized.");
+			throw new NotAuthorizedException("You are not authorized." + step +"<br/>"+ex.getMessage());
 		}
 
 	}
