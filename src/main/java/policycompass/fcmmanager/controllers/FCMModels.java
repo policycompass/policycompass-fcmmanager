@@ -8,9 +8,15 @@ import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import com.sun.jersey.api.client.*;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import javax.naming.NamingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
