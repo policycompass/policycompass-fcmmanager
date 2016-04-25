@@ -827,12 +827,27 @@ public class FCMModels {
 
 		Client c = Client.create();
 		WebResource resource = c.resource(ADHOCRACY_URL);
-		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON_TYPE)
-				.header("X-User-Path", userPath)
-				.header("X-User-Token", userToken).get(ClientResponse.class);
 
+		TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+			public X509Certificate[] getAcceptedIssuers(){return null;}
+			public void checkClientTrusted(X509Certificate[] certs, String authType){}
+			public void checkServerTrusted(X509Certificate[] certs, String authType){}
+		}};
+
+		// Install the all-trusting trust manager
+		try {
+			SSLContext sc = SSLContext.getInstance("TLS");
+			sc.init(null, trustAllCerts, new SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		} catch (Exception e) {
+			;
+		}
 
 		try{
+			ClientResponse response = resource.accept(MediaType.APPLICATION_JSON_TYPE)
+					.header("X-User-Path", userPath)
+					.header("X-User-Token", userToken).get(ClientResponse.class);
+
 			JSONObject json = response.getEntity(JSONObject.class);
 			if(json.has("errors"))
 				throw new NotAuthorizedException("You are not authorized.");
@@ -844,6 +859,7 @@ public class FCMModels {
 		catch(Exception ex){
 			throw new NotAuthorizedException("You are not authorized.");
 		}
+
 	}
 
 	public static boolean isGods(String userPath) {
