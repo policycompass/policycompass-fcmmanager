@@ -304,6 +304,53 @@ public class FCMModels {
 		@SuppressWarnings("unchecked")
 		List<FCMConnection> connectiondb = qConnection.list();
 
+		//Get List of domain for the model
+		Query qDomain = session.createQuery("from fcmmanager_modelindomain where FCMModel_id= :id");
+		qDomain.setInteger("id", id);
+		@SuppressWarnings("unchecked")
+		List<FCMModelInDomain> policyDomaindb = qDomain.list();
+
+		//deleting domains of model if not in new domain list
+		try {
+			JSONArray domains = jsonModel.getJSONObject("data").getJSONArray("domains");
+			//Insert all domains of model
+			if(policyDomaindb.size()==0)
+			{
+				for (int i = 0; i < domains.length(); i++) {
+					FCMModelInDomain dmn = new FCMModelInDomain();
+					dmn.setId(domainID + i);
+					dmn.setFCMModelID(id);
+					dmn.setDomainID(domains.getInt(i));
+					policyDomain.add(dmn);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < domains.length(); i++) {
+					for (int j = 0; j < policyDomaindb.size(); j++) {
+						if (policyDomaindb.get(j).getId() == domains.getInt(i)) {
+							Found = true;
+						}
+					}
+
+
+				}
+
+				for (int i = 0; i <  policyDomaindb.size(); i++) {
+					for (int j = 0; j <domains.length(); j++) {
+						if (policyDomaindb.get(i).getId() == domains.getInt(j)) {
+							Found = true;
+						}
+					}
+					if(!Found)
+						session.delete(policyDomaindb.get(i));
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		try {
 			for (int i = 0; i < conceptdb.size(); i++) {
 				for (int j = 0; j < concepts.length(); j++) {
@@ -380,11 +427,17 @@ public class FCMModels {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+
+
 		for (int i = 0; i < concept.size(); i++) {
 			session.save(concept.get(i));
 		}
 		for (int i = 0; i < connection.size(); i++) {
 			session.save(connection.get(i));
+		}
+		for (int i = 0; i < policyDomain.size(); i++) {
+			session.save(policyDomain.get(i));
 		}
 		session.getTransaction().commit();
 		session.clear();
