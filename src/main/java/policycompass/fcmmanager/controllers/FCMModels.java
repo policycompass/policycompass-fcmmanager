@@ -333,7 +333,15 @@ public class FCMModels {
 						}
 					}
 
-
+					if(!Found)
+					{
+						//Insert newely added domains of model
+						FCMModelInDomain dmn = new FCMModelInDomain();
+						dmn.setId(domainID + i);
+						dmn.setFCMModelID(id);
+						dmn.setDomainID(domains.getInt(i));
+						policyDomain.add(dmn);
+					}
 				}
 
 				for (int i = 0; i <  policyDomaindb.size(); i++) {
