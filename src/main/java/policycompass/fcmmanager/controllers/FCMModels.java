@@ -68,6 +68,7 @@ public class FCMModels {
 		int modelID = getFCMModelID();
 		int conceptID = getConceptID();
 		int connectionID = getConnectionID();
+		int domainID = getFCMModelInDomainID();
 
 		try {
 			model.setId(modelID);
@@ -439,6 +440,24 @@ public class FCMModels {
 		session.close();
 
 		return (modelID + 1);
+	}
+
+	public static int getFCMModelInDomainID() {
+		int domainID = 0;
+
+		Session session = HibernateUtil.getSessionFactory().openSession();
+
+		session.beginTransaction();
+		Criteria criteria = session.createCriteria(FCMModelInDomain.class).setProjection(Projections.max("id"));
+		if (criteria.uniqueResult() == null) {
+			domainID = 0;
+		} else {
+			domainID = (Integer) criteria.uniqueResult();
+		}
+		session.clear();
+		session.close();
+
+		return (domainID + 1);
 	}
 
 	public static int getConceptID() {
