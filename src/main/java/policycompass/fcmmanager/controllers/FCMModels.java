@@ -60,7 +60,7 @@ public class FCMModels {
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
 
-		List<FCMModelInDomain> domain = new ArrayList<FCMModelInDomain>();
+		List<FCMModelInDomain> policyDomain = new ArrayList<FCMModelInDomain>();
 
 
 		Date date1 = new Date();
@@ -80,7 +80,15 @@ public class FCMModels {
 			model.setUserPath(userPath);
 			model.setViewsCount(0);
 
-
+			//Add domains of model
+			JSONArray domains = jsonModel.getJSONObject("data").getJSONArray("domains");
+			for (int i = 0; i < domains.length(); i++) {
+				FCMModelInDomain dmn = new FCMModelInDomain();
+				dmn.setId(domainID + i);
+				dmn.setFCMModelID(modelID);
+				dmn.setDomainID(domains.getInt(i));
+				policyDomain.add(dmn);
+			}
 
 			JSONArray concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
 			for (int i = 0; i < concepts.length(); i++) {
@@ -160,6 +168,9 @@ public class FCMModels {
 		for (int i = 0; i < connection.size(); i++) {
 			session.save(connection.get(i));
 		}
+		for (int i = 0; i < policyDomain.size(); i++) {
+			session.save(policyDomain.get(i));
+		}
 		session.getTransaction().commit();
 		session.clear();
 		session.close();
@@ -173,6 +184,7 @@ public class FCMModels {
 
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
+		List<FCMModelInDomain> policyDomain = new ArrayList<FCMModelInDomain>();
 		Date date1 = new Date();
 		JSONArray concepts = null;
 		JSONArray connections = null;
@@ -180,6 +192,7 @@ public class FCMModels {
 
 		int conceptID = getConceptID();
 		int connectionID = getConnectionID();
+		int domainID = getFCMModelInDomainID();
 
 		try {
 			concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
@@ -270,6 +283,14 @@ public class FCMModels {
 		}
 
 		model.setDateModified(date1);
+		try{
+			model.setTitle(jsonModel.getJSONObject("data").getJSONObject("model").get("title").toString());
+			model.setDescription(jsonModel.getJSONObject("data").getJSONObject("model").get("description").toString());
+			model.setKeywords(jsonModel.getJSONObject("data").getJSONObject("model").get("keywords").toString());
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
 		session.update(model);
 
 		Query qConcept = session.createQuery("from fcmmanager_concepts where FCMModel_id= :id");
