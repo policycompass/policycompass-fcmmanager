@@ -6,6 +6,7 @@ target/
 .project
 
 hibernate.cfg.xml
+WebContent/WEB-INF/web.xml
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
