@@ -77,7 +77,12 @@ Create a postgres user and a database
   cp src/main/resources/hibernate.cfg.template.xml src/main/resources/hibernate.cfg.xml
   gedit src/main/resources/hibernate.cfg.xml
 ```
-* Download Java Fuzzy Cognitive Maps Library 
+* Edit the configuration to your needs (e.g. adapt adhocracy3 location)
+```shell
+  cp WebContent/WEB-INF/web.xml.template WebContent/WEB-INF/web.xml
+  gedit WebContent/WEB-INF/web.xml
+```
+* Download Java Fuzzy Cognitive Maps Library
 ```shell
   http://jfcm.megadix.it/book/documentation/getting-started/download-and-installation
 ```
