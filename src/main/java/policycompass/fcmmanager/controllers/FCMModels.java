@@ -60,7 +60,7 @@ public class FCMModels {
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
 
-		List<FCMModelInDomain> domain = new ArrayList<FCMModelInDomain>();
+		List<FCMModelInDomain> policyDomain = new ArrayList<FCMModelInDomain>();
 
 
 		Date date1 = new Date();
@@ -68,6 +68,7 @@ public class FCMModels {
 		int modelID = getFCMModelID();
 		int conceptID = getConceptID();
 		int connectionID = getConnectionID();
+		int domainID = getFCMModelInDomainID();
 
 		try {
 			model.setId(modelID);
@@ -80,7 +81,15 @@ public class FCMModels {
 			model.setUserPath(userPath);
 			model.setViewsCount(0);
 
-
+			//Add domains of model
+			JSONArray domains = jsonModel.getJSONObject("data").getJSONArray("domains");
+			for (int i = 0; i < domains.length(); i++) {
+				FCMModelInDomain dmn = new FCMModelInDomain();
+				dmn.setId(domainID + i);
+				dmn.setFCMModelID(modelID);
+				dmn.setDomainID(domains.getInt(i));
+				policyDomain.add(dmn);
+			}
 
 			JSONArray concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
 			for (int i = 0; i < concepts.length(); i++) {
@@ -160,6 +169,9 @@ public class FCMModels {
 		for (int i = 0; i < connection.size(); i++) {
 			session.save(connection.get(i));
 		}
+		for (int i = 0; i < policyDomain.size(); i++) {
+			session.save(policyDomain.get(i));
+		}
 		session.getTransaction().commit();
 		session.clear();
 		session.close();
@@ -173,6 +185,7 @@ public class FCMModels {
 
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
+		List<FCMModelInDomain> policyDomain = new ArrayList<FCMModelInDomain>();
 		Date date1 = new Date();
 		JSONArray concepts = null;
 		JSONArray connections = null;
@@ -180,6 +193,7 @@ public class FCMModels {
 
 		int conceptID = getConceptID();
 		int connectionID = getConnectionID();
+		int domainID = getFCMModelInDomainID();
 
 		try {
 			concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
@@ -270,6 +284,14 @@ public class FCMModels {
 		}
 
 		model.setDateModified(date1);
+		try{
+			model.setTitle(jsonModel.getJSONObject("data").getJSONObject("model").get("title").toString());
+			model.setDescription(jsonModel.getJSONObject("data").getJSONObject("model").get("description").toString());
+			model.setKeywords(jsonModel.getJSONObject("data").getJSONObject("model").get("keywords").toString());
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
 		session.update(model);
 
 		Query qConcept = session.createQuery("from fcmmanager_concepts where FCMModel_id= :id");
@@ -281,6 +303,61 @@ public class FCMModels {
 		qConnection.setInteger("id", id);
 		@SuppressWarnings("unchecked")
 		List<FCMConnection> connectiondb = qConnection.list();
+
+		//Get List of domain for the model
+		Query qDomain = session.createQuery("from fcmmanager_modelindomain where FCMModel_id= :id");
+		qDomain.setInteger("id", id);
+		@SuppressWarnings("unchecked")
+		List<FCMModelInDomain> policyDomaindb = qDomain.list();
+
+		//deleting domains of model if not in new domain list
+		try {
+			JSONArray domains = jsonModel.getJSONObject("data").getJSONArray("domains");
+			//Insert all domains of model
+			if(policyDomaindb.size()==0)
+			{
+				for (int i = 0; i < domains.length(); i++) {
+					FCMModelInDomain dmn = new FCMModelInDomain();
+					dmn.setId(domainID + i);
+					dmn.setFCMModelID(id);
+					dmn.setDomainID(domains.getInt(i));
+					policyDomain.add(dmn);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < domains.length(); i++) {
+					for (int j = 0; j < policyDomaindb.size(); j++) {
+						if (policyDomaindb.get(j).getId() == domains.getInt(i)) {
+							Found = true;
+						}
+					}
+
+					if(!Found)
+					{
+						//Insert newely added domains of model
+						FCMModelInDomain dmn = new FCMModelInDomain();
+						dmn.setId(domainID + i);
+						dmn.setFCMModelID(id);
+						dmn.setDomainID(domains.getInt(i));
+						policyDomain.add(dmn);
+					}
+				}
+
+				for (int i = 0; i <  policyDomaindb.size(); i++) {
+					for (int j = 0; j <domains.length(); j++) {
+						if (policyDomaindb.get(i).getId() == domains.getInt(j)) {
+							Found = true;
+						}
+					}
+					if(!Found)
+						session.delete(policyDomaindb.get(i));
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		try {
 			for (int i = 0; i < conceptdb.size(); i++) {
@@ -358,11 +435,17 @@ public class FCMModels {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+
+
 		for (int i = 0; i < concept.size(); i++) {
 			session.save(concept.get(i));
 		}
 		for (int i = 0; i < connection.size(); i++) {
 			session.save(connection.get(i));
+		}
+		for (int i = 0; i < policyDomain.size(); i++) {
+			session.save(policyDomain.get(i));
 		}
 		session.getTransaction().commit();
 		session.clear();
@@ -418,6 +501,24 @@ public class FCMModels {
 		session.close();
 
 		return (modelID + 1);
+	}
+
+	public static int getFCMModelInDomainID() {
+		int domainID = 0;
+
+		Session session = HibernateUtil.getSessionFactory().openSession();
+
+		session.beginTransaction();
+		Criteria criteria = session.createCriteria(FCMModelInDomain.class).setProjection(Projections.max("id"));
+		if (criteria.uniqueResult() == null) {
+			domainID = 0;
+		} else {
+			domainID = (Integer) criteria.uniqueResult();
+		}
+		session.clear();
+		session.close();
+
+		return (domainID + 1);
 	}
 
 	public static int getConceptID() {
