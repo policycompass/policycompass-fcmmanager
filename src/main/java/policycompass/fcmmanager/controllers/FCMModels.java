@@ -279,8 +279,7 @@ public class FCMModels {
 			session.getTransaction().rollback();
 			session.clear();
 			session.close();
-
-			return (retrieveFCMModel("", "", 0));
+			throw new NotAuthorizedException("This model has been created by another user.");//Throwing unauthorized message
 		}
 
 		model.setDateModified(date1);
