@@ -54,6 +54,8 @@ public class FCMModelService {
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response updateFCMModel(@PathParam("id") int id, JSONObject fcmmodel,@HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String userToken) {
+
+
 		return Response.ok(FCMModels.updateFCMModel(id, fcmmodel, userPath, userToken)).build();
 //    	FCMModels.updateFCMModel(id, fcmmodel);
 //        return Response.ok(fcmmodel).build();
@@ -63,9 +65,9 @@ public class FCMModelService {
 	@DELETE
 	@Path("/models/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response deleteFCMModel(@PathParam("id") int id) {
-		FCMModels.deleteFCMModel(id);
-		return Response.status(204).build();
+	public Response deleteFCMModel(@PathParam("id") int id, @HeaderParam("X-User-Path") String userPath, @HeaderParam("X-User-Token") String userToken) {
+		return Response.ok(FCMModels.deleteFCMModel(id, userPath, userToken)).build();
+		//return Response.status(204).build();
 	}
 
 	@GET

@@ -279,8 +279,7 @@ public class FCMModels {
 			session.getTransaction().rollback();
 			session.clear();
 			session.close();
-
-			return (retrieveFCMModel("", "", 0));
+			throw new NotAuthorizedException("This model has been created by another user.");//Throwing unauthorized message
 		}
 
 		model.setDateModified(date1);
@@ -455,13 +454,37 @@ public class FCMModels {
 		// return(rtnStr);
 	}
 
-	public static void deleteFCMModel(int id) {
+	public static boolean deleteFCMModel(int id, String userPath, String userToken) {
+		//check is user authorized to update the model. If not authorized then throw exception with message.
+		authenticateRquest(userPath,userToken);
+
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		session.beginTransaction();
-		Query qModel = session.createQuery("from fcmmanager_models where id= :id");
-		qModel.setInteger("id", id);
+		Query qModel;
+
+		//is Admin user or not
+		boolean isUserGods=isGods(userPath);
+		if(isUserGods){
+			//If user role is admin then allow to modify the model
+			qModel = session.createQuery("from fcmmanager_models where id= :id");
+			qModel.setInteger("id", id);
+		}
+		else{
+			//If user role is non admin then allow to modify the model if it was created by him
+			qModel = session.createQuery("from fcmmanager_models where id= :id and userPath=:userPath");
+			qModel.setInteger("id", id);
+			qModel.setString("userPath", userPath);
+		}
+
 		FCMModel model = (FCMModel) qModel.uniqueResult();
+
+		if(model == null){
+			session.getTransaction().rollback();
+			session.clear();
+			session.close();
+			throw new NotAuthorizedException("This model has been created by another user.");//Throwing unauthorized message
+		}
 
 		Query qConcept = session.createQuery("from fcmmanager_concepts where FCMModel_id= :id");
 		qConcept.setInteger("id", id);
@@ -483,6 +506,8 @@ public class FCMModels {
 		session.getTransaction().commit();
 		session.clear();
 		session.close();
+
+		return true;
 	}
 
 	public static int getFCMModelID() {
@@ -944,22 +969,21 @@ public class FCMModels {
 			;
 		}
 
-		int step=0;
 		try{
 			ClientResponse response = resource.accept(MediaType.APPLICATION_JSON_TYPE)
 					.header("X-User-Path", userPath)
 					.header("X-User-Token", userToken).get(ClientResponse.class);
-			step++;
+
 			JSONObject json = response.getEntity(JSONObject.class);
 			if(json.has("errors"))
 				throw new NotAuthorizedException("You are not authorized.");
-			step++;
+
 			JSONObject metadata = json.getJSONObject("data").getJSONObject("adhocracy_core.sheets.metadata.IMetadata");
 			if(metadata.getString("deleted").equals("true") || metadata.getString("hidden").equals("true"))
 				throw new NotAuthorizedException("You are not authorized.");
 		}
 		catch(Exception ex){
-			throw new NotAuthorizedException("You are not authorized." + step +"<br/>"+ex.getMessage());
+			throw new NotAuthorizedException("You are not authorized.");
 		}
 
 	}
