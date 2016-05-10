@@ -26,7 +26,7 @@ public class FCMModel {
 	private Date DateModified;
 	@Column(name = "ViewsCount", nullable = false)
 	private int ViewsCount;
-	@Column(name = "UserPath", nullable = false)
+	@Column(name = "UserPath", nullable = true)
 	private String UserPath;
 
 	public FCMModel() {
