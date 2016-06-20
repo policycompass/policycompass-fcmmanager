@@ -1060,5 +1060,45 @@ public class FCMModels {
 		return output;
 	}
 
+	public static FCMWeka wekaOutputTEST() throws Exception {
 
+		StringBuilder sb = new StringBuilder();
+		sb.append("@relation level_of_satisfaction\n\n");
+		sb.append("@attribute speed_public_service numeric\n");
+		sb.append("@attribute accessibility numeric\n");
+		sb.append("@attribute regional_Gdp numeric\n");
+		sb.append("@attribute 'level of satisfaction' numeric\n\n");
+		sb.append("@data\n");
+		sb.append("0.6,0.2,0.6,0.2\n");
+		sb.append("0.6,0.4,0.6,0.2\n");
+		sb.append("0.6,0.4,0.8,0.2\n");
+		sb.append("0.4,0.6,0.8,0.4\n");
+		sb.append("0.8,1,1,0.8\n");
+		sb.append("1,1,1,1\n");
+
+		StringReader trainreader = new StringReader(sb.toString());
+		Instances train = new Instances(trainreader);
+		train.setClassIndex(train.numAttributes()-1);
+
+		MultilayerPerceptron classifier = new MultilayerPerceptron();
+
+		classifier.setHiddenLayers("0");
+		try {
+			classifier.buildClassifier(train);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String wekaResp=classifier.toString();
+
+		FCMWeka output=new FCMWeka();
+		output.setMinimum(0);
+		output.setMaximum(1);
+		output.setMean(0.4f);
+		output.setStdDev(.658f);
+		output.setWekaString(wekaResp);
+		return output;
+
+	}
 }
