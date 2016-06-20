@@ -29,6 +29,17 @@ import org.hibernate.criterion.Projections;
 import policycompass.fcmmanager.hibernate.HibernateUtil;
 import policycompass.fcmmanager.models.*;;
 
+import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.MultilayerPerceptron;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Utils;
+
 public class FCMModels {
 	private static String ADHOCRACY_URL ="";
 	private static String ADHOCRACY_GODS_URL="";
@@ -1014,6 +1025,54 @@ public class FCMModels {
 			super(Response.status(Response.Status.UNAUTHORIZED)
 					.entity(message).type(MediaType.TEXT_PLAIN).build());
 		}
+	}
+
+
+	public static FCMWeka wekaOutput(String wekaInput) throws Exception {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("@relation level_of_satisfaction\n\n");
+		sb.append("@attribute speed_public_service numeric\n");
+		sb.append("@attribute accessibility numeric\n");
+		sb.append("@attribute regional_Gdp numeric\n");
+		sb.append("@attribute 'level of satisfaction' numeric\n\n");
+		sb.append("@data\n");
+		sb.append("0.6,0.2,0.6,0.2\n");
+		sb.append("0.6,0.4,0.6,0.2\n");
+		sb.append("0.6,0.4,0.8,0.2\n");
+		sb.append("0.4,0.6,0.8,0.4\n");
+		sb.append("0.8,1,1,0.8\n");
+		sb.append("1,1,1,1\n");
+
+		//StringReader trainreader = new StringReader(sb.toString());
+		StringReader trainreader = new StringReader(wekaInput);
+		Instances train = new Instances(trainreader);
+		train.setClassIndex(train.numAttributes()-1);
+
+		MultilayerPerceptron classifier = new MultilayerPerceptron();
+
+		classifier.setHiddenLayers("0");
+		try {
+			classifier.buildClassifier(train);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		System.out.print(classifier);
+		String wekaResp=classifier.toString();
+		//return classifier.toString();
+		//.m_attributeBases;
+
+
+		FCMWeka output=new FCMWeka();
+		output.setMinimum(0);
+		output.setMaximum(1);
+		output.setMean(0.4f);
+		output.setStdDev(.658f);
+		output.setWekaString(wekaResp);
+		return output;
+
 	}
 
 

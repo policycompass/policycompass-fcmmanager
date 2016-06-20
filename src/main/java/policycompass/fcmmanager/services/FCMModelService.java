@@ -12,6 +12,15 @@ import policycompass.fcmmanager.simulation.pcjfcm;
 @Path("/fcmmanager")
 public class FCMModelService {
 
+	@POST
+	@Path("/wekaoutput")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response retrieveWekaOutput(String wekaInput) throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMModels.wekaOutput(wekaInput)).build();
+		return rb;
+	}
 
 	@GET
 	@Path("/models")
@@ -132,5 +141,4 @@ public class FCMModelService {
 		return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();
 //        return Response.ok(fcmmodel).build();
 	}
-
 }

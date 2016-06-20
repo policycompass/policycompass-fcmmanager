@@ -169,6 +169,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <version>v1.4.2</version>
     </dependency>
 
+	  <dependency>
+		  <groupId>nz.ac.waikato.cms.weka</groupId>
+		  <artifactId>weka-stable</artifactId>
+		  <version>3.8.0</version>
+	  </dependency>
+
   </dependencies>
   
 </project>
