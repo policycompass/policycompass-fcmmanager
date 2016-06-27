@@ -16,7 +16,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 	    <jdk.version>1.7</jdk.version>  
 		<guice.version>3.0</guice.version>
 		<guava.version>r09</guava.version>
-		<tomcat.target.dev>${CATALINA_HOME}/webapps</tomcat.target.dev>
+		<tomcat.target.dev>${env.CATALINA_HOME}/webapps</tomcat.target.dev>
 	</properties>
 
 	<build>
