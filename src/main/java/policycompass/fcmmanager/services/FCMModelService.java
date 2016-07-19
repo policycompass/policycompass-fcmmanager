@@ -12,15 +12,6 @@ import policycompass.fcmmanager.simulation.pcjfcm;
 @Path("/fcmmanager")
 public class FCMModelService {
 
-	@GET
-	@Path("/wekaoutputtest")
-	@Produces({MediaType.APPLICATION_JSON})
-	public Response retrieveWekaOutput() throws Exception {
-		Response rb = null;
-		rb = Response.ok(FCMModels.wekaOutputTEST()).build();
-		return rb;
-	}
-
 	@POST
 	@Path("/wekaoutput")
 	@Consumes({MediaType.APPLICATION_JSON})
@@ -150,4 +141,14 @@ public class FCMModelService {
 		return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();
 //        return Response.ok(fcmmodel).build();
 	}
+
+	@GET
+	@Path("/relatedModelsBykeyword/{keyword}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response relatedFCMModelBykeyword(@PathParam("keyword") String keyword) throws Exception {
+		Response rb = null;
+		rb = Response.ok(FCMModels.getRelatedFCMModelBykeyword(keyword)).build();
+		return rb;
+	}
+
 }
