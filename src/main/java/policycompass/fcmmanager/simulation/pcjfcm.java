@@ -282,12 +282,12 @@ public class pcjfcm {
 				connectionSimulationID = connectionSimulationID + 1;
 
 				FcmConnection conn = new WeightedConnection(
-						"c" + con.getConceptFrom() + " -> " + "c" + con.getConceptTo(),
+						i+"-c" + con.getConceptFrom() + " -> " + "c" + con.getConceptTo(),
 						ob.getJSONObject("source").getString("title") + " -> "
 								+ ob.getJSONObject("destination").getString("title"),
 						sCon.getWeighted());
 				map.addConnection(conn);
-				map.connect("c" + con.getConceptFrom(), "c" + con.getConceptFrom() + " -> " + "c" + con.getConceptTo(),
+				map.connect("c" + con.getConceptFrom(), i+"-c" + con.getConceptFrom() + " -> " + "c" + con.getConceptTo(),
 						"c" + con.getConceptTo());
 			}
 
@@ -514,7 +514,7 @@ public class pcjfcm {
 	}
 
 	public static void setSimulationConceptValues(List<List<FCMSimulationConcept>> listSimulationConcept,
-			List<FCMSimulationConcept> simulationConcept, int ConceptID) {
+												  List<FCMSimulationConcept> simulationConcept, int ConceptID) {
 		double[] scaleVal = new double[5];
 		scaleVal[0] = 0.2;
 		scaleVal[1] = 0.4;
@@ -542,7 +542,7 @@ public class pcjfcm {
 	}
 
 	public static void setSimulationConceptValues(List<List<FCMSimulationConcept>> listSimulationConcept,
-			List<FCMSimulationConcept> simulationConcept, int ConceptID1, int ConceptID2) {
+												  List<FCMSimulationConcept> simulationConcept, int ConceptID1, int ConceptID2) {
 		double[] scaleVal = new double[5];
 		scaleVal[0] = 0.2;
 		scaleVal[1] = 0.4;
