@@ -28,7 +28,8 @@ public class FCMModel {
 	private int ViewsCount;
 	@Column(name = "UserPath", nullable = true)
 	private String UserPath;
-
+	@Column(name = "IsDraft", nullable = true)
+	private Boolean IsDraft;
 	public FCMModel() {
 		this.id = 0;
 		this.Title = "";
@@ -37,9 +38,10 @@ public class FCMModel {
 		this.UserID = 0;
 		this.ViewsCount = 0;
 		this.UserPath="";
+		this.IsDraft=false;
 	}
 
-	public FCMModel(int fcmid, String title, String description, String keywords, int userid, int viewscount, String UserPath) {
+	public FCMModel(int fcmid, String title, String description, String keywords, int userid, int viewscount, String UserPath, Boolean IsDraft) {
 		this.id = fcmid;
 		this.Title = title;
 		this.Description = description;
@@ -47,6 +49,7 @@ public class FCMModel {
 		this.UserID = userid;
 		this.ViewsCount = viewscount;
 		this.UserPath=UserPath;
+		this.IsDraft=IsDraft;
 	}
 
 	public int getId() { return id; }
@@ -76,6 +79,8 @@ public class FCMModel {
 	public String getUserPath() { return UserPath; }
 	public void setUserPath(String userpath) { this.UserPath = userpath; }
 
-	@Override
+	public Boolean getIsDraft() { return IsDraft; }
+	public void setIsDraft(Boolean isDraft) { this.IsDraft = isDraft; }
+
 	public String toString() { return getId() + ", " + getTitle() + ", " + getDescription(); }
 }
