@@ -55,7 +55,7 @@ public class FCMModels {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		session.beginTransaction();
-		Query query = session.createQuery("from fcmmanager_models");
+		Query query = session.createQuery("from fcmmanager_models where isdraft=false or isdraft=null"); //Return only public models
 		@SuppressWarnings("unchecked")
 		List<FCMModel> model = query.list();
 		session.clear();
