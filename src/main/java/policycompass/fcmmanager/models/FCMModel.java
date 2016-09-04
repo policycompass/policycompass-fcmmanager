@@ -87,5 +87,8 @@ public class FCMModel {
 	public Boolean getIsDraft() { return IsDraft; }
 	public void setIsDraft(Boolean isDraft) { this.IsDraft = isDraft; }
 
+	public int getDerivedFromId() { return DerivedFromId == null ? 0 : DerivedFromId; }
+	public void setDerivedFromId(int derivedFromId) { this.DerivedFromId = derivedFromId; }
+
 	public String toString() { return getId() + ", " + getTitle() + ", " + getDescription(); }
 }
