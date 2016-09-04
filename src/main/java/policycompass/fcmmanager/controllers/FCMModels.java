@@ -91,6 +91,7 @@ public class FCMModels {
 			model.setDateModified(date1);
 			model.setUserPath(userPath);
 			model.setIsDraft(Boolean.parseBoolean(jsonModel.getJSONObject("data").get("isDraft").toString()));
+			model.setDerivedFromId(Integer.parseInt(jsonModel.getJSONObject("data").get("derivedFromId").toString()));
 			model.setViewsCount(0);
 
 			//Add domains of model
