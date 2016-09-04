@@ -30,6 +30,9 @@ public class FCMModel {
 	private String UserPath;
 	@Column(name = "IsDraft", nullable = true)
 	private Boolean IsDraft;
+	@Column(name = "DerivedFromId", nullable = true)
+	private Integer DerivedFromId;
+
 	public FCMModel() {
 		this.id = 0;
 		this.Title = "";
@@ -37,19 +40,21 @@ public class FCMModel {
 		this.Keywords = "";
 		this.UserID = 0;
 		this.ViewsCount = 0;
-		this.UserPath="";
-		this.IsDraft=false;
+		this.UserPath = "";
+		this.IsDraft = false;
+		this.DerivedFromId = 0;
 	}
 
-	public FCMModel(int fcmid, String title, String description, String keywords, int userid, int viewscount, String UserPath, Boolean IsDraft) {
+	public FCMModel(int fcmid, String title, String description, String keywords, int userid, int viewscount, String UserPath, Boolean IsDraft, int DerivedFromId) {
 		this.id = fcmid;
 		this.Title = title;
 		this.Description = description;
 		this.Keywords = keywords;
 		this.UserID = userid;
 		this.ViewsCount = viewscount;
-		this.UserPath=UserPath;
-		this.IsDraft=IsDraft;
+		this.UserPath = UserPath;
+		this.IsDraft = IsDraft;
+		this.DerivedFromId = DerivedFromId;
 	}
 
 	public int getId() { return id; }
