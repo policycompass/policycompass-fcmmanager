@@ -28,6 +28,10 @@ public class FCMModel {
 	private int ViewsCount;
 	@Column(name = "UserPath", nullable = true)
 	private String UserPath;
+	@Column(name = "IsDraft", nullable = true)
+	private Boolean IsDraft;
+	@Column(name = "DerivedFromId", nullable = true)
+	private Integer DerivedFromId;
 
 	public FCMModel() {
 		this.id = 0;
@@ -36,17 +40,21 @@ public class FCMModel {
 		this.Keywords = "";
 		this.UserID = 0;
 		this.ViewsCount = 0;
-		this.UserPath="";
+		this.UserPath = "";
+		this.IsDraft = false;
+		this.DerivedFromId = 0;
 	}
 
-	public FCMModel(int fcmid, String title, String description, String keywords, int userid, int viewscount, String UserPath) {
+	public FCMModel(int fcmid, String title, String description, String keywords, int userid, int viewscount, String UserPath, Boolean IsDraft, int DerivedFromId) {
 		this.id = fcmid;
 		this.Title = title;
 		this.Description = description;
 		this.Keywords = keywords;
 		this.UserID = userid;
 		this.ViewsCount = viewscount;
-		this.UserPath=UserPath;
+		this.UserPath = UserPath;
+		this.IsDraft = IsDraft;
+		this.DerivedFromId = DerivedFromId;
 	}
 
 	public int getId() { return id; }
@@ -76,6 +84,11 @@ public class FCMModel {
 	public String getUserPath() { return UserPath; }
 	public void setUserPath(String userpath) { this.UserPath = userpath; }
 
-	@Override
+	public Boolean getIsDraft() { return IsDraft; }
+	public void setIsDraft(Boolean isDraft) { this.IsDraft = isDraft; }
+
+	public int getDerivedFromId() { return DerivedFromId == null ? 0 : DerivedFromId; }
+	public void setDerivedFromId(int derivedFromId) { this.DerivedFromId = derivedFromId; }
+
 	public String toString() { return getId() + ", " + getTitle() + ", " + getDescription(); }
 }

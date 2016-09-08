@@ -55,7 +55,7 @@ public class FCMModels {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		session.beginTransaction();
-		Query query = session.createQuery("from fcmmanager_models");
+		Query query = session.createQuery("from fcmmanager_models where isdraft=false or isdraft=null"); //Return only public models
 		@SuppressWarnings("unchecked")
 		List<FCMModel> model = query.list();
 		session.clear();
@@ -90,6 +90,8 @@ public class FCMModels {
 			model.setDateAddedtoPC(date1);
 			model.setDateModified(date1);
 			model.setUserPath(userPath);
+			model.setIsDraft(Boolean.parseBoolean(jsonModel.getJSONObject("data").get("isDraft").toString()));
+			model.setDerivedFromId(Integer.parseInt(jsonModel.getJSONObject("data").get("derivedFromId").toString()));
 			model.setViewsCount(0);
 
 			//Add domains of model
@@ -298,6 +300,7 @@ public class FCMModels {
 			model.setTitle(jsonModel.getJSONObject("data").getJSONObject("model").get("title").toString());
 			model.setDescription(jsonModel.getJSONObject("data").getJSONObject("model").get("description").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").getJSONObject("model").get("keywords").toString());
+			model.setIsDraft(Boolean.parseBoolean(jsonModel.getJSONObject("data").get("isDraft").toString()));//Setting draft status
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
