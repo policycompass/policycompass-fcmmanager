@@ -99,9 +99,12 @@ public class FCMModelDetail {
 	public FCMModelDetail(String userPath, int modelID) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		//Only show draft model to the user who created this model
-		Query query = session.createQuery("from fcmmanager_models where id= :id and (isdraft=false or isdraft=null or userpath='' or ''=:userPath or userpath= :userPath)");
+		//Query query = session.createQuery("from fcmmanager_models where id= :id and (isdraft=false or isdraft=null or userpath='' or ''=:userPath or userpath= :userPath)");
+
+		//show draft model to the all users
+		Query query = session.createQuery("from fcmmanager_models where id= :id");
 		query.setInteger("id", modelID);
-		query.setString("userPath", userPath);
+		//query.setString("userPath", userPath);
 		model = (FCMModel) query.uniqueResult();
 		if(model!=null){
 			Query queryDomain = session.createQuery("from fcmmanager_modelindomain where fcmmodel_id= :id");
