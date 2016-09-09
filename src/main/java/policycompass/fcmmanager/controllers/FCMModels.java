@@ -91,7 +91,7 @@ public class FCMModels {
 			model.setDateAddedtoPC(date1);
 			model.setDateModified(date1);
 			model.setUserPath(userPath);
-			model.setIsDraft(Boolean.parseBoolean(jsonModel.getJSONObject("data").get("isDraft").toString()));
+			model.setis_draft(Boolean.parseBoolean(jsonModel.getJSONObject("data").get("isDraft").toString()));
 			model.setDerivedFromId(Integer.parseInt(jsonModel.getJSONObject("data").get("derivedFromId").toString()));
 			model.setViewsCount(0);
 
@@ -301,7 +301,7 @@ public class FCMModels {
 			model.setTitle(jsonModel.getJSONObject("data").getJSONObject("model").get("title").toString());
 			model.setDescription(jsonModel.getJSONObject("data").getJSONObject("model").get("description").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").getJSONObject("model").get("keywords").toString());
-			model.setIsDraft(Boolean.parseBoolean(jsonModel.getJSONObject("data").get("isDraft").toString()));//Setting draft status
+			model.setis_draft(Boolean.parseBoolean(jsonModel.getJSONObject("data").get("isDraft").toString()));//Setting draft status
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
