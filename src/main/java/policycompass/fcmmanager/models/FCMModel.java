@@ -1,7 +1,8 @@
 package policycompass.fcmmanager.models;
 
 import java.util.Date;
-
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,10 +21,11 @@ public class FCMModel {
 	private String Keywords;
 	@Column(name = "UserID", nullable = false)
 	private int UserID;
-	@Column(name = "DateAddedtoPC", nullable = false)
-	private Date DateAddedtoPC;
-	@Column(name = "DateModified", nullable = false)
-	private Date DateModified;
+
+	@Column(name = "date_created", nullable = false)
+	private Date Date_Created;
+	@Column(name = "date_modified", nullable = false)
+	private Date Date_Modified;
 	@Column(name = "ViewsCount", nullable = false)
 	private int ViewsCount;
 	@Column(name = "UserPath", nullable = true)
@@ -72,11 +74,18 @@ public class FCMModel {
 	public int getUserID() { return UserID; }
 	public void setUserID(int userid) { this.UserID = userid; }
 
-	public Date getDateAddedtoPC() { return DateAddedtoPC; }
-	public void setDateAddedtoPC(Date dateaddedtopc) { this.DateAddedtoPC = dateaddedtopc; }
+	public String getdate_created() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		return sdf.format(Date_Created);
+	}
+	public void setdate_created(Date date_created) { this.Date_Created = date_created; }
 
-	public Date getDateModified() { return DateModified; }
-	public void setDateModified(Date datemodified) { this.DateModified = datemodified; }
+	public String getdate_modified() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		return sdf.format(Date_Modified); }
+	public void setdate_modified(Date date_modified) { this.Date_Modified = date_modified; }
 
 	public int getViewsCount() { return ViewsCount; }
 	public void setViewsCount(int viewscount) { this.ViewsCount = viewscount; }
