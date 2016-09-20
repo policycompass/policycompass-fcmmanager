@@ -147,7 +147,11 @@ public class FCMModelService {
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response runImpactAnaylsis(@PathParam("id") int id, JSONObject fcmmodel) {
-		return Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();
+		Response rb = null;
+		try{
+			rb = Response.ok(pcjfcm.runImpactAnalysis(id, fcmmodel)).build();
+		}catch(Exception ex){}
+		return rb;
 //        return Response.ok(fcmmodel).build();
 	}
 }
