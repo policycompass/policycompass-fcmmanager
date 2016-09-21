@@ -55,7 +55,7 @@ public class FCMModelDetail {
 	public void setConceptindividuals(List<FCMConceptIndividual> conceptindividuals) {
 		this.conceptindividuals = conceptindividuals;
 	}
-/*
+
 	public FCMModelDetail(int modelID) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Query query = session.createQuery("from fcmmanager_models where id= :id");
@@ -94,7 +94,6 @@ public class FCMModelDetail {
 		session.clear();
 		session.close();
 	}
-        */
 
 	public FCMModelDetail(String userPath, int modelID) {
 		Session session = HibernateUtil.getSessionFactory().openSession();

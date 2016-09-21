@@ -1,9 +1,12 @@
 package policycompass.fcmmanager.simulation;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -24,6 +27,7 @@ import policycompass.fcmmanager.models.FCMConcept;
 import policycompass.fcmmanager.models.FCMConceptIndividual;
 import policycompass.fcmmanager.models.FCMConnection;
 import policycompass.fcmmanager.models.FCMModel;
+import policycompass.fcmmanager.models.FCMModelDetail;
 import policycompass.fcmmanager.models.FCMSimulationConcept;
 import policycompass.fcmmanager.models.FCMSimulationConnection;
 import policycompass.fcmmanager.models.FCMSimulationDetail;
@@ -99,12 +103,17 @@ public class pcjfcm {
 		session.beginTransaction();
 
 		try {
-			modelID = Integer
-					.parseInt(jsonModel.getJSONObject("data").getJSONObject("model").get("ModelID").toString());
+			modelID = Integer.parseInt(jsonModel.getJSONObject("data").getJSONObject("model").get("ModelID").toString());
+			FCMModelDetail modelDetails= new FCMModelDetail(modelID);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			sdf.setTimeZone(TimeZone.getDefault());
+
 			model.setId(modelID);
 			model.setTitle(jsonModel.getJSONObject("data").getJSONObject("model").get("title").toString());
 			model.setDescription(jsonModel.getJSONObject("data").getJSONObject("model").get("description").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").getJSONObject("model").get("keywords").toString());
+			model.setdate_created(sdf.parse(modelDetails.getModel().getdate_created()));
+			model.setdate_modified(sdf.parse(modelDetails.getModel().getdate_modified()));
 
 			activatorID = Integer.parseInt(jsonModel.getJSONObject("data").get("activatorId").toString());
 
@@ -342,7 +351,7 @@ public class pcjfcm {
 		return (FCMSimulation);
 	}
 
-	public static FCMSimulationDetail runImpactAnalysis(int id, JSONObject jsonModel) {
+	public static FCMSimulationDetail runImpactAnalysis(int id, JSONObject jsonModel) throws ParseException {
 		FCMModel model = new FCMModel();
 		List<List<FCMSimulationConcept>> listSimulationConcept = new ArrayList<List<FCMSimulationConcept>>();
 		List<FCMSimulationConcept> simulationConcept = new ArrayList<FCMSimulationConcept>();
@@ -365,12 +374,17 @@ public class pcjfcm {
 		af.setIncludePreviousOutput(false);
 
 		try {
-			modelID = Integer
-					.parseInt(jsonModel.getJSONObject("data").getJSONObject("model").get("ModelID").toString());
+			modelID = Integer.parseInt(jsonModel.getJSONObject("data").getJSONObject("model").get("ModelID").toString());
+			FCMModelDetail modelDetails= new FCMModelDetail(modelID);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			sdf.setTimeZone(TimeZone.getDefault());
+
 			model.setId(modelID);
 			model.setTitle(jsonModel.getJSONObject("data").getJSONObject("model").get("title").toString());
 			model.setDescription(jsonModel.getJSONObject("data").getJSONObject("model").get("description").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").getJSONObject("model").get("keywords").toString());
+			model.setdate_created(sdf.parse(modelDetails.getModel().getdate_created()));
+			model.setdate_modified(sdf.parse(modelDetails.getModel().getdate_modified()));
 
 			JSONArray concepts = jsonModel.getJSONObject("data").getJSONArray("concepts");
 			for (int i = 0; i < concepts.length(); i++) {

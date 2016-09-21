@@ -88,8 +88,8 @@ public class FCMModels {
 			model.setDescription(jsonModel.getJSONObject("data").get("ModelDesc").toString());
 			model.setKeywords(jsonModel.getJSONObject("data").get("ModelKeywords").toString());
 			model.setUserID(Integer.parseInt(jsonModel.getJSONObject("data").get("userID").toString()));
-			model.setDateAddedtoPC(date1);
-			model.setDateModified(date1);
+			model.setdate_created(date1);
+			model.setdate_modified(date1);
 			model.setUserPath(userPath);
 			model.setis_draft(Boolean.parseBoolean(jsonModel.getJSONObject("data").get("isDraft").toString()));
 			model.setDerivedFromId(Integer.parseInt(jsonModel.getJSONObject("data").get("derivedFromId").toString()));
@@ -296,7 +296,7 @@ public class FCMModels {
 			throw new NotAuthorizedException("This model has been created by another user.");//Throwing unauthorized message
 		}
 
-		model.setDateModified(date1);
+		model.setdate_modified(date1);
 		try{
 			model.setTitle(jsonModel.getJSONObject("data").getJSONObject("model").get("title").toString());
 			model.setDescription(jsonModel.getJSONObject("data").getJSONObject("model").get("description").toString());
@@ -649,8 +649,8 @@ public class FCMModels {
 		for (int i = 0; i < 2; i++) {
 			model[i].setId(modelID + i);
 			model[i].setUserID(1);
-			model[i].setDateAddedtoPC(date1);
-			model[i].setDateModified(date1);
+			model[i].setdate_created(date1);
+			model[i].setdate_modified(date1);
 			model[i].setViewsCount(0);
 		}
 
@@ -674,7 +674,7 @@ public class FCMModels {
 		concept[17].setTitle("Initiative 1 (e-workflow introduction)");
 		concept[18].setTitle("Initiative 2 (number of e-services)");
 		concept[19].setTitle("Initiative 3 (Penetration rate of broadband nets)");
-		concept[20].setTitle("Initiative 4 (citizen’s e-skills improvement)");
+		concept[20].setTitle("Initiative 4 (citizen's e-skills improvement)");
 		concept[21].setTitle("Government spending");
 		concept[22].setTitle("Speed of public services delivery");
 		concept[23].setTitle("Level of public services accessibility");
