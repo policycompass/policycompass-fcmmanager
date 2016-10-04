@@ -994,7 +994,7 @@ public class FCMModels {
 				throw new NotAuthorizedException("You are not authorized.");
 
 			JSONObject metadata = json.getJSONObject("data").getJSONObject("adhocracy_core.sheets.metadata.IMetadata");
-			if(metadata.getString("deleted").equals("true") || metadata.getString("hidden").equals("true"))
+			if((metadata.has("deleted") && metadata.getString("deleted").equals("true")) || (metadata.has("hidden") && metadata.getString("hidden").equals("true")))
 				throw new NotAuthorizedException("You are not authorized.");
 		}
 		catch(Exception ex){
