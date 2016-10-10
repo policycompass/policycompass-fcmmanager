@@ -2,6 +2,8 @@ package policycompass.fcmmanager.controllers;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +41,11 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
+
+enum Role {
+    ADMIN, USER
+};
+
 
 public class FCMModels {
 	private static String ADHOCRACY_URL ="";
@@ -195,7 +202,7 @@ public class FCMModels {
 
 	public static FCMModelDetail updateFCMModel(int id, JSONObject jsonModel, String userPath, String userToken) {
 		//check is user authorized to update the model. If not authorized then throw exception with message.
-		authenticateRquest(userPath,userToken);
+		Role role = authenticateRquest(userPath,userToken);
 
 		List<FCMConcept> concept = new ArrayList<FCMConcept>();
 		List<FCMConnection> connection = new ArrayList<FCMConnection>();
@@ -274,7 +281,7 @@ public class FCMModels {
 		Query qModel;
 
 		//is Admin user or not
-		boolean isUserGods=isGods(userPath);
+		boolean isUserGods= role == Role.ADMIN;
 		if(isUserGods){
 			//If user role is admin then allow to modify the model
 			qModel = session.createQuery("from fcmmanager_models where id= :id");
@@ -471,7 +478,7 @@ public class FCMModels {
 
 	public static boolean deleteFCMModel(int id, String userPath, String userToken) {
 		//check is user authorized to update the model. If not authorized then throw exception with message.
-		authenticateRquest(userPath,userToken);
+		Role role = authenticateRquest(userPath,userToken);
 
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
@@ -479,7 +486,7 @@ public class FCMModels {
 		Query qModel;
 
 		//is Admin user or not
-		boolean isUserGods=isGods(userPath);
+		boolean isUserGods = role == Role.ADMIN;
 		if(isUserGods){
 			//If user role is admin then allow to modify the model
 			qModel = session.createQuery("from fcmmanager_models where id= :id");
@@ -952,8 +959,12 @@ public class FCMModels {
 		ADHOCRACY_GODS_URL = (String)env.lookup("adhocracy.god"); //getgods url
 	}
 
-	public static void authenticateRquest(String userPath,String userToken)
+	public static Role authenticateRquest(String userPath, String userToken)
 	{
+      /** Authenticates user and returns its role.
+       */
+
+
 		//get url from configuration.
 		if(ADHOCRACY_URL == null || ADHOCRACY_URL.isEmpty()) {
 			try {
@@ -966,8 +977,22 @@ public class FCMModels {
 		if(userPath == null || userToken == null)
 			throw new NotAuthorizedException("Invalid request.");
 
+
+    URI adhocracyBaseUrl;
+    URI adhocracyUserUrl;
+    URI sanatizedUserUrl;
+
+    try {
+        adhocracyBaseUrl = new URI(ADHOCRACY_URL);
+        adhocracyUserUrl = new URI(userPath);
+        sanatizedUserUrl = new URI(adhocracyBaseUrl.getScheme(), adhocracyBaseUrl.getHost(),
+                                   adhocracyUserUrl.getPath(), adhocracyUserUrl.getFragment());
+    } catch (URISyntaxException e) {
+        throw new NotAuthorizedException("Invalid url!");
+    }
+
 		Client c = Client.create();
-		WebResource resource = c.resource(ADHOCRACY_URL);
+		WebResource resource = c.resource(sanatizedUserUrl);
 
 		TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
 			public X509Certificate[] getAcceptedIssuers(){return null;}
@@ -989,40 +1014,29 @@ public class FCMModels {
 					.header("X-User-Path", userPath)
 					.header("X-User-Token", userToken).get(ClientResponse.class);
 
-			JSONObject json = response.getEntity(JSONObject.class);
-			if(json.has("errors"))
-				throw new NotAuthorizedException("You are not authorized.");
+      if(response.getStatus() >= 400 && response.getStatus() < 500) {
+          throw new NotAuthorizedException("You are not authorized.");
+      } else if (response.getStatus() > 200 || response.getStatus() >= 300) {
+          throw new NotAuthorizedException("Can not authorize, due to configuration error.");
+      }
 
-			JSONObject metadata = json.getJSONObject("data").getJSONObject("adhocracy_core.sheets.metadata.IMetadata");
-			if((metadata.has("deleted") && metadata.getString("deleted").equals("true")) || (metadata.has("hidden") && metadata.getString("hidden").equals("true")))
-				throw new NotAuthorizedException("You are not authorized.");
+			JSONObject json = response.getEntity(JSONObject.class);
+      JSONArray roles = json.getJSONObject("data")
+          .getJSONObject("adhocracy_core.sheets.principal.IPermissions")
+          .getJSONArray("roles");
+
+      for (int i = 0; i < roles.length(); i++) {
+          if (roles.getString(i) == "admin") {
+              return Role.ADMIN;
+          }
+      }
+      return Role.USER;
 		}
 		catch(Exception ex){
 			throw new NotAuthorizedException("You are not authorized.");
 		}
-
 	}
 
-	public static boolean isGods(String userPath) {
-		boolean userIsGod=false;
-		Client c = Client.create();
-		WebResource resource = c.resource(ADHOCRACY_GODS_URL);
-		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
-
-		// This might not work out of the box. Or be missing dependencies. Needs to be checked.
-		JSONObject json = response.getEntity(JSONObject.class);
-		List<String> gods = new ArrayList<>();
-		try {
-			JSONArray users = json.getJSONObject("data").getJSONObject("adhocracy_core.sheets.principal.IGroup").getJSONArray("users");
-			for(int i = 0; i < users.length(); i++)
-				gods.add(users.getString(i));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		userIsGod = gods.contains(userPath);
-		return userIsGod;
-	}
 
 	public static class NotAuthorizedException extends WebApplicationException {
 		public  NotAuthorizedException(String message) {
